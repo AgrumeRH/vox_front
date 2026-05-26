@@ -1,0 +1,270 @@
+{% extends 'templates/app.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set jsvote = 1 %}
+
+{% block content %}
+
+	<style type="text/css">
+		.photo {
+			width: {{photosizes.large}}px;
+			height: {{photosizes.large}}px;
+		}
+		.photo-small {
+			width: {{photosizes.small}}px;
+			height: {{photosizes.small}}px;
+		}
+	</style>
+
+	<div id="bureau">
+		{% if membres and membres is not empty %}
+			<div class="row">
+				<div class="col-md-8 col-lg-10">
+					<h2>{{ trad('membres_bureau', lang) }}</h2>
+				</div>
+				<div class="col-md-4 col-lg-2 text-right">
+					<button type="button" class="btn btn-secondary btn-icon btnFermerMembres"><i class="fa fa-chevron-up"></i> {{ trad('reduire', lang) }}</button>
+				</div>
+				<div class="col-12">
+					<ul>
+					{% for membre in membres %}
+						{% if membre.member_role == 'manager' %}
+							<li>
+								<i class="fa fa-user-circle text-secondary"></i>
+								{{ membre.member_prenom|capitalize  }} {{ membre.member_nom|upper }}
+							</li>
+						{% endif %}
+					{% endfor %}
+					</ul>
+				</div>
+				
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="row vote-electeur">
+		<div class="col">
+
+			<i class="float-left fa-solid fa-vote-yea fa-5x mr-3 pt-2 gris-c"></i>
+			{% if type == 'referendum' or type == 'porteurs' or type == 'votemultiple' %}
+				<h1>{{ vote.vote_college }}</h1>
+			{% else %}
+				<h1>
+					{% if type != 'barreau' %}
+						{{ trad('college', lang) }}
+					{% endif %}
+					{{  vote.vote_college }}
+					{% if type != 'barreau' %}
+						, {{ trad('election_des', lang) }} {{ trad(vote.vote_category|lower, lang) }}
+					{% endif %}
+				 </h1>
+				<h2>{% if vote.vote_tour == 1 %}{{ trad('premier_tour', lang) }}{% else %}{{ trad('second_tour', lang) }}{% endif %}</h2>
+			{% endif %}
+		</div>
+	</div>
+
+	<div id="step1" data-max="{{ max_select }}">
+		<div class="row">
+			<div class="col-12">
+
+				<div class="alert alert-info">
+					<span class="alert-icon">
+						<i class="fa fa-info"></i>
+					</span>
+					<div class="info-electeur">
+
+					{% if vote.vote_texte_aide != '' %}
+						{{ vote.vote_texte_aide|nl2br }}
+					{% else %}
+						{% if type == 'referendum' %}
+							{{ trad('selectionner_choix_referendum', lang)|nl2br }}
+						{% else %}
+							{{ trad('selectionner_choix', lang)|nl2br }}
+						{% endif %}
+					{% endif %}
+					
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center ">
+
+			{% for choice in choices %}
+
+				{% if choice.choice_max_candidats > 0 %}
+					{% set max_select_choice = choice.choice_max_candidats %}
+				{% else %}
+					{% set max_select_choice = max_select %}
+				{% endif %}	
+
+				{% if type == 'barreau' and choice.choice_alerte_min_choix == 1 %}
+					{% set appel_msg_min_choix = 1 %}
+					{% if choice.choice_min_choix_alerte < 2 %}
+						{% set nb_min_choix_alerte = vote.vote_nbsieges %}
+					{% else %}
+						{% set nb_min_choix_alerte = choice.choice_min_choix_alerte %}
+					{% endif %}
+				{% else %}
+					{% set appel_msg_min_choix = 0 %}
+				{% endif %}	
+				
+				<div class="col-12 choixcol {% if listes_lignes != 1 %}col-lg-6{% endif %} {% if appel_msg_min_choix == 1 %}msgminchoix{% endif %}" {% if appel_msg_min_choix == 1 %}data-min-choix-alerte="{{ nb_min_choix_alerte }}"{% endif %} data-nbsieges="{{ vote.vote_nbsieges }}" data-binomes="{{ choice.choice_binomes }}" data-blancs_nuls="{{ choice.choice_blancs_nuls }}">
+					<div class="card onechoice {% if strike_candidats %}strike-candidats{% endif %} {% if choice.choice_open %}active-choice{% endif %}">
+						<div class="card-header">
+							<div class="row row-choice-photo">
+								<div class="col-{% if choice.choice_pdf %}9{% else %}12{% endif %}">
+								
+									<div class="custom-control custom-radio">
+										<input type="radio" id="choice_{{ choice.choice_id }}" name="choice" value="{{ choice.choice_id }}" class="custom-control-input">
+										<label class="custom-control-label choice_name mh-choice" for="choice_{{ choice.choice_id }}">
+											{% if choice.choice_logo %}
+												<img alt="logo choix" src="{{ base_url() }}/custom/{{ choice.choice_logo }}" alt="{{ choice.choice_name }}"/>
+											{% endif %}
+											{{ choice.choice_name }}
+										</label>
+									</div>
+								</div>
+								{% if choice.choice_pdf %}
+								<div class="col-md-3">
+									<a class="downloadpdf btn btn-secondary btn-profession-foi noloader w-100" href="{{ path_for(session.area~'.choice.download',{type:'pdf',file:choice.choice_pdf}) }}" 
+									{% if type == 'referendum' %}
+										title="{{ trad('telecharger_document',lang) }}">
+										<i class="far fa-file-pdf fa-lg"></i><br>
+										{{ trad('document',lang) }}
+									</a>
+									{% else %}
+									title="{{ trad('telecharger_profession_foi',lang) }}">
+										<i class="far fa-file-pdf fa-lg"></i><br>
+										{{ trad('profession_foi',lang) }}
+									</a>
+									{% endif %}
+								</div>
+								{% endif %}
+							</div>
+						</div>
+						<div class="card-body" style="{% if choice.choice_open == 0 %}display:none{% endif %}" data-max="{{ max_select_choice }}">
+
+							<div class="row">
+								<div class="col-md-12">
+
+									<div class="choice_description {% if choice.choice_description != "" %}mb-3{% endif %}">
+										{{ choice.choice_description|nl2br }}
+									</div>
+									
+									<div class="options">
+
+										{% if max_select_choice > 0 %}
+
+											<div class="hid alert-max-select">
+												<div class="alert alert-danger">
+													<span class="alert-icon">
+														<i class="fa fa-info-circle"></i>
+													</span>
+													<div>
+														<p class="small">
+														{% if choice.choice_binomes == 1 %}
+															{{ trad('pas_plus_de_binomes',lang, {'nb': max_select_choice}) }}
+														{% else %}
+															{{ trad('pas_plus_de_candidats',lang, {'nb': max_select_choice}) }}
+														{% endif %}
+														</p>
+													</div>
+												</div>
+											</div>
+
+										{% endif %}
+
+										{% for i,nom in choice.choice_options.nom %}
+
+											{% set cochedeja = '' %}
+											{% set valchoicecoche = i %}
+											{% if choice.choice_noncoches == 1 %}
+												{% set valchoicecoche = -1 %}
+												{% set cochedeja = 'opacity-unchecked' %}
+											{% endif %}
+
+											<div class="oneoption {% if max_select_choice > 0 %}maxUncheck{% endif %} {% if choice.choice_contraste == 1 %}contraste{% endif %}" 
+											{% if choice.choice_espace_px %}style="margin-bottom:{{ choice.choice_espace_px }}px;"{% endif %}>
+
+												{{ form.checkbox(nom~' '~choice.choice_options.prenom[i],valchoicecoche,i,'options['~choice.choice_id~'][]', choice.choice_options.photo[i], null, choice.choice_font_size, cochedeja, choice.choice_nostrike) }}
+
+												{% if '.pdf' in choice.choice_options.foi[i] %}
+													<a href="{{ base_url() }}/foi/{{ choice.choice_options.foi[i] }}" class="badge badge-secondary btn-foi-candidat" target="_blank"><i class="fa fa-file-pdf"></i> Profession de foi</a>
+												{% endif %}
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer text-right" style="{% if choice.choice_open == 0 %}display:none{% endif %}">
+							
+							<span class="btn btn-success btn-icon btn-pad-50 w-100 vote" data-isblanc="{% if choice.choice_id == 0%}1{% else %}0{% endif %}">
+								<i class="fa fa-check"></i> {{ trad('valider_choix', lang) }}</span>
+						</div>
+						
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+		{% if session.area != 'admin' %}
+			<a href="{{ path_for('electeur.votes') }}" class="btn btn-secondary btn-icon btn-pad" >
+				<i class="fa fa-undo"></i> {{ trad('revenir_votes', lang) }}
+			</a>
+		{% endif %}
+	</div>
+	<div id="step2" style="display:none">
+		<div class="row">
+			<div class="col-12">
+				<div class="alert alert-info">
+					<span class="alert-icon">
+						<i class="fa fa-info-circle"></i>
+					</span>
+					<div>
+						<p>{{ trad('veuillez_verifier_choix', lang) }}</p>
+						<p>{{ trad('confirmer_voter', lang) }}</p>
+						<p>{{ trad('modifier_retour', lang) }}</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="card">
+			<div class="card-header">
+				<span class="choice_name"></span>
+			</div>
+			<div class="card-body">
+				<div class="choice_description mb-1"></div>
+				<div class="choice_options"></div>
+			</div>
+			<div class="card-footer">
+				<div class="row">
+					<div class="col-6">
+						<span class="btn btn-secondary btn-icon btn-pad step1">
+							<i class="fa fa-undo"></i> {{ trad('retour_propositions', lang) }}</span>
+					</div>
+					<div class="col-6 text-right">
+						<span class="btn btn-success btn-icon btn-pad action" data-confirm="1" data-text="{{ trad('bulletin_urne_plus_modifier', lang) }}" id="sendvote">
+							<i class="fa fa-check"></i> {{ trad('voter_choix', lang) }}</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<textarea id="publickey" style="display:none">{{ publickey }}</textarea>
+	<textarea id="votekey" style="display:none">{{ vote.vote_publickey }}</textarea>
+	<form id="voteform" action="{{ path_for('electeur.vote.save',{'vote_id':vote.vote_id}) }}" method="POST">
+		<input type="hidden" name="bulletin" id="bulletin" value=""/>
+		<input type="hidden" name="passphrase" id="passphrase" value=""/>
+		{{ form.csrf(csrf) }}
+	</form>
+{% endblock %}
+
+{% block navigation %}
+	{% if session.area != 'admin' %}
+		{% include '/electeur/navigation.twig' %}
+	{% endif %}
+{% endblock %}

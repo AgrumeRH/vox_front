@@ -1,0 +1,18 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set activemenu = 'electeur' %}
+
+{% block subcontent %}
+<form action="{{ path_for('electeur.login.confirm.save') }}" method="POST">
+	{{ form.input(trad('code_sms', lang),'',trad('code_sms', lang),'smscode') }}
+
+	<p style="margin-top:-15px; font-size:11px;color:#555;"><i class="fa fa-info-circle text-danger"></i> 
+		{{ trad('respectez_casse', lang) }}
+	</p>
+	{{ form.csrf(csrf) }}
+
+	<button type="submit" class="btn btn-primary">{{ trad('se_connecter', lang) }}</button>
+
+</form>
+<a href="{{ path_for('electeur.login.sendsms') }}" aria-label="sms à électeur">{{ trad('demander_sms', lang) }}</a>
+{% endblock %}

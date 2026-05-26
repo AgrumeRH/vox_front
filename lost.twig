@@ -1,0 +1,58 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% import 'templates/departements.twig' as dep %}
+{% set activemenu = 'electeur' %}
+
+{% block subcontent %}
+
+<form action="{{ path_for('electeur.lost.save') }}" method="POST" autocomplete="off">
+
+    <div class="form-group">
+        <label>{{ trad('indiquez_raison', lang) }}</label>
+        {{ form.radio(trad('pas_recu_id_mdp', lang),reason,'email_missing','reason', null, null,'t-14') }}
+        {{ form.radio(trad('login_mdp_marche_pas', lang),reason,'email_wrong','reason', null, null,'t-14') }}
+        {% if election.election_confirmauth == 'sms' %}
+            {{ form.radio(trad('pas_recu_sms', lang),reason,'sms_missing','reason', null, null,'t-14') }}
+            {{ form.radio(trad('sms_marche_pas', lang),reason,'sms_wrong','reason', null, null,'t-14') }}
+        {% elseif election.election_confirmauth == 'info' %}
+            {% if election.election_infotype == 'datedepnaiss' %}
+                {{ form.radio(trad('date_dep_naiss_inconnu', lang),reason,'info_wrong','reason', null, null,'t-14') }}
+            {% elseif election.election_infotype == 'numss' %}
+                {{ form.radio(trad('numss_inconnu', lang),reason,'info_wrong','reason', null, null,'t-14') }}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {{ form.input("",userAccess.useraccess_nom,trad('nom', lang),'useraccess[useraccess_nom]') }}
+    {{ form.input("",userAccess.useraccess_prenom,trad('prenom', lang),'useraccess[useraccess_prenom]') }}
+    {{ form.email("",userAccess.useraccess_email,trad('email', lang),'useraccess[useraccess_email]') }}
+    {{ form.input("",userAccess.useraccess_tel,trad('tel', lang),'useraccess[useraccess_tel]') }}
+
+    {% set secondfacteur = wording != '' and election.election_infotype == 'other' and election.election_confirmauth == 'info' ? wording : trad('numss', lang) %}
+
+    {% if fields.numss %}
+        {{ form.input('',userAccess.useraccess_numss,secondfacteur,'useraccess[useraccess_numss]') }}
+    {% endif %}
+
+    {% if fields.idmultiple %}
+        {{ form.input('',userAccess.useraccess_idmultiple,'Identifiant unique','useraccess[useraccess_idmultiple]') }}
+    {% endif %}
+
+    {% if fields.datenaiss %}
+        {{ form.date(trad('date_naissance', lang),userAccess.useraccess_datenaiss,'useraccess[useraccess_datenaiss]') }}
+    {% endif %}
+
+    {% if fields.depnaiss %}
+        {{ dep.select("",userAccess.useraccess_depnaiss,'useraccess[useraccess_depnaiss]') }}
+    {% endif %}
+
+    {{ form.csrf(csrf) }}
+    <div class="form-group">
+        <button type="submit" class="btn btn-info btn-icon w-100 btn-pad">
+            <i class="fa fa-check"></i>
+            {{ trad('envoyez_demande', lang) }}
+        </button>
+    </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set activemenu = 'electeur' %}
+
+{% block subcontent %}
+	<form action="{{ path_for('electeur.login.code.tel') }}" method="POST">
+
+        <p class="t-14">{{ trad('recevoir_sms', lang) }}<br>{{ trad('renseignez_tel', lang) }} :</p>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fa fa-mobile-alt fa-fw"></i> 
+                </div>
+            </div>
+            <input type="text" class="form-control" id="tel" name="tel" placeholder="00 00 00 00 00" max-length="15" aria-label="numéro téléphone électeur">
+        </div>
+
+        {{ form.csrf(csrf) }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-icon w-100">
+                <i class="fa fa-check"></i>{{ trad('valider', lang) }}</button>
+        </div>
+
+    </form>
+
+     <div class="form-group small">
+		<a href="{{ path_for('electeur.lost') }}" class="text-secondary" aria-label="electeur lost">
+			<span class="fa-stack fa-xs" aria-hidden="true">
+				<i class="fa fa-circle fa-stack-2x text-secondary"></i>
+				<i class="fa fa-question fa-stack-1x text-white"></i>
+			</span>
+			{{ trad('probleme_cnx', lang) }}</a>
+	</div>
+
+{% endblock %}

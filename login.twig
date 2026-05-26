@@ -1,0 +1,203 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set activemenu = 'electeur' %}
+{% set area = 'electeur' %}
+{% set aidechat = 1 %}
+
+{% block subcontent %}
+	<form action="{{ path_for('electeur.login.send') }}" method="POST" autocomplete="off" target="_top">
+
+	{% if election.election_phone %}
+		{% set telephone = election.election_phone %}
+	{% else %}
+		{% set telephone = '04 28 29 28 29' %}
+	{% endif %}
+
+	{% if election.election_cnil == 1 and election.election_infotype == 'defi' %}
+		{% set infosms = trad('code_access', lang) %}
+	{% else %}
+		{% set infosms = trad('mot_de_passe', lang) %}
+	{% endif %}
+
+		<div class="small title-login">
+			<i class="fa fa-person-booth mr-3"></i>{{ trad('espace_electeur', lang) }}</var>
+    	</div>
+
+		<div class="row mt-3">
+			<div class="col input-group mb-4">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+						<i class="fa fa-hashtag fa-fw"></i>
+					</div>
+				</div>
+				<input type="text" class="form-control" id="username" name="username" placeholder="{% if election.election_connexion == 'email' or election.election_connexion == 'mail_idpw' or  election.election_connexion == "mail_id_mail_pw" or election.election_connexion == "mail_id_poste_pw"   %}{{ trad('ident_recu_mail', lang) }}{% else %}{{ trad('ident_recu_courrier', lang) }}{% endif %}">
+				<div class="invalid-feedback ml-5">
+					<i class="fa fa-exclamation-triangle mr-1"></i> {{ trad('ident_invalide', lang) }}
+				</div>
+			</div>
+		</div>
+		{% if election.election_type == 'votemultiple' %}
+			<div class="input-group mb-4">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+						<i class="fa-regular fa-id-card"></i>
+					</div>
+				</div>
+				<input type="text" class="form-control" id="idunique" name="idunique" placeholder="{% if election.election_connexion == 'email' or election.election_connexion == 'mail_idpw' or  election.election_connexion == "mail_id_mail_pw" %}{{ trad('id_multiple_mail', lang) }}{% else %}{{ trad('id_multiple_courrier', lang) }}{% endif %}">
+			</div>
+		{% endif %}
+		<div class="row">
+			{% set maxCaracteresQuestionPlaceholder = 40 %}
+
+			{% if election.election_cnil == 1 and election.election_question|length >= maxCaracteresQuestionPlaceholder %}
+				<div class="col-12">{{ election.election_question }}</div>
+			{% endif %}
+
+			<div class="col input-group mb-4">
+				{% if election.election_cnil == 1 and election.election_infotype == 'defi' %}	
+
+					{% if election.election_question|length >= maxCaracteresQuestionPlaceholder %}
+						{% set placeholder = trad('votre_reponse', lang) %}
+					{% else %}
+						{% set placeholder = election.election_question %}
+					{% endif %}		
+						<div class="input-group-prepend">
+							<div class="input-group-text">
+								<i class="fa fa-question-circle fa-fw"></i>
+							</div>
+						</div>
+						<input type="text" class="form-control" id="defi" name="defi" placeholder="{{ placeholder }}">
+					{% else %}		
+						<div class="input-group-prepend">
+							<div class="input-group-text">
+								<i class="fa fa-key fa-fw"></i>
+							</div>
+						</div>
+						<input type="password" class="form-control" id="password" name="password" placeholder="{{ infosms }}">
+						<div class="input-group-append showhidepw" title="{{ trad('afficher_masquer', lang) }}">
+							<div class="input-group-text">
+								<i class="fa fa-eye fa-fw"></i>
+							</div>
+						</div>
+				{% endif %}
+			</div>
+		</div>
+
+		{{ form.csrf(csrf) }}
+		<div class="form-group">
+			<button type="submit" class="btn btn-success btn-pad w-100 btn-icon" name="connexion electeur">
+				<i class="fas fa-unlock-alt"></i>
+				{{ trad('se_connecter', lang) }}</button>
+		</div>
+	</form>
+	
+	<div class="form-group small {% if election.election_cnil == 1 and election.election_infotype == 'defi' %}d-none{% endif %}">
+		{# <a href="{{ path_for('electeur.lost') }}" class="text-secondary" id="pbcnx" aria-label="Mot de passe perdu"> #}
+		<span id="pbcnxAide" class="text-danger" onclick="ouverturePopUp()"  aria-label="Mot de passe perdu">
+			<span class="fa-stack fa-xs" aria-hidden="true">
+				<i class="fa fa-circle fa-stack-2x text-secondary"></i>
+				<i class="fa fa-question fa-stack-1x text-white"></i>
+			</span>
+			{{ trad('probleme_cnx', lang) }}
+		</span>
+	</div>
+		<div id="chatIcon" onclick="ouverturePopUp()"><i class="fas fa-question"></i></div>
+
+		<!-- Chat Popup -->
+		<div id="chatPopup" class="card">
+		 	<div class="card-header">
+    			<h4 class="questionnaire-heading"><i class="far fa-question-circle"></i> {{ trad('aide_questionnaire_titre', lang) }}</h4>
+				<div class="cross-div" onclick="fermeturePopUp()"><i class="fas fa-times"></i></div>
+  			</div>
+			<div class="card-body question-div">
+				
+				<span id="questionIntro">{{ trad('aide_questionnaire_intro', lang) }}</span>
+				<p class="question" id="options1"></p>
+				<p class="question" id="options2"></p>
+			</div>
+			<div class="card-footer">
+				<span class="btnRetourAide" onclick="resetAide()"><i class="fa fa-undo-alt mr-1"></i> {{ trad('retour', lang) }}</span>
+			</div>
+
+			
+		</div>
+
+	<script type="text/javascript">
+	
+		const questions = [{
+			// 0
+			question: "{{ trad('aide_quisuisje', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_electeur', lang)|e('js')|raw }}", "{{ trad('aide_membre', lang)|e('js')|raw }}"],
+			question1: 1,
+			question2: 10
+		},
+		// 1
+		{
+			question: "{{ trad('aide_questions_cnx', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_idmdp_recu', lang)|e('js')|raw }}", "{{ trad('aide_idmdp_non_recu', lang)|e('js')|raw }}"],
+			question1: 2,
+			question2: 6
+		},
+		// 2
+		{
+			question: "{{ trad('aide_idmdp_recu', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_idmdp_incorrect', lang)|e('js')|raw }}", "{{ trad('aide_infos_incorrectes', lang)|e('js')|raw }}"],
+			question1: 3,
+			question2: 4
+		},
+		//3
+		{
+			question: "{{ trad('aide_idmdp_incorrect', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_renvoi_idmdp', lang)|e('js')|raw }}", "{{ trad('aide_renvoi_idmdp_deja', lang)|e('js')|raw }}"],
+			question1: 9,
+			question2: 10,
+		},
+		//4
+		{
+			question: "{{ trad('aide_infos_incorrectes', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_formulaire', lang)|e('js')|raw }}", "{{ trad('aide_bloque_deja', lang)|e('js')|raw }}"],
+			question1: 9,
+			question2: 10,
+		},
+		//5
+		{
+			question: "{{ trad('aide_bloque_tentatives', lang)|e('js')|raw }}",
+			options: ["{{ telephone }}"],
+			text: "{{ telephone }}",
+		},
+		//6
+		{
+			question: "{{ trad('aide_idmdp_non_recu', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_demande_idmdp', lang)|e('js')|raw }}", "{{ trad('aide_appeler', lang)|e('js')|raw }}"],
+			question1: 9,
+			question2: 10,
+		},
+		//7
+		{
+			question: '{{ trad('aide_bureau', lang)|e('js')|raw }}',
+		},
+		//8
+		{
+			question: 'Redirection Script',
+			options: ['Redirection', 'Redirection'],
+			question1: 10,
+			question2: 10,
+		},
+		//9
+		{
+			question: "{{ trad('aide_demande_rectif_infos', lang)|e('js')|raw }}",
+			options: ["{{ trad('aide_formulaire', lang)|e('js')|raw }}", "{{ trad('aide_appel_place', lang)|e('js')|raw }}"],
+			question1: 8,
+			question2: 10,
+		},
+		//10
+		{
+			question: "{{ trad('aide_numero_dessous', lang)|e('js')|raw }}",
+			options: ["{{ telephone }}"],
+			text: "{{ telephone }}",
+			question1: 1,
+			question2: 2,
+		}
+		];
+	</script>
+{% endblock %}

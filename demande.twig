@@ -1,0 +1,27 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+
+{% block subcontent %}
+<form action="{{ path_for('electeur.demande.send') }}" method="POST">
+
+	<p class="text-justify t-14 mb-2"><i class="fa fa-info-circle mr-1 text-info"></i> 
+		{{ trad('demande_envoyee_verif',lang) }}
+	</p>
+	<p class="text-justify t-14 mb-1"><i class="fa fa-check-double mr-1 text-success"></i>
+		{{ trad('demande_info_suivantes',lang) }}
+	</p>
+	<ul class="mb-0 t-14">
+	{% for field,value in modifications %}
+		<li><strong>{{ field }}</strong> : {{ value }}</li>
+	{% endfor %}
+	</ul>
+	
+	{{ form.textarea("",'',trad('message_personnel',lang),'message') }}
+
+	{{ form.csrf(csrf) }}
+	<button type="submit" class="btn btn-info btn-icon btn-pad w-100">
+	<i class="fa fa-paper-plane"></i>
+		{{ trad('envoyer_votre_demande',lang) }}
+	</button>
+</form>
+{% endblock %}
