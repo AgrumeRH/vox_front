@@ -1,0 +1,972 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+nav#organisateurNavigation {
+    background: #f5f5f5 ;
+    display: flex; /* ➜ rend le conteneur horizontal */
+    align-items: center;
+    padding: 0;
+}
+
+/* Le <ul> prend le reste */
+nav#organisateurNavigation ul {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0;
+}
+
+nav#organisateurNavigation ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    list-style: none;
+    width: 100vw;
+    padding: .75rem 0;
+}
+
+nav#organisateurNavigation li {
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.5rem;
+    height: 70px;
+    min-width: 100px;
+    flex: 1;
+    margin: 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: .3;
+    cursor: not-allowed;
+    transition: background-color 0.3s ease;
+}
+
+nav#organisateurNavigation li.encours {
+    background-color: #ddd;
+    border-color: #234f52;
+    color: #234f52;
+    cursor: default;
+}
+
+nav#organisateurNavigation li.validee,
+nav#organisateurNavigation li.locked {
+    border-color: #adc799;
+    background-color: #d9e7d6;
+    color: #234f52;
+    opacity: .7;
+    cursor: default;
+    transition: background-color 0.3s ease;
+}
+
+nav#organisateurNavigation li.locked {
+    position: relative;
+    border-color: #adc799;
+    background-color: #d9e7d6;
+    color: #234f52;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+nav#organisateurNavigation li.validee:hover {
+    opacity: 1;
+    transition: background-color 0.3s ease;
+}
+
+nav#organisateurNavigation li.erreur {
+    position: relative;
+    border-color: #c18580;
+    background-color: #f1d0cd;
+    color: #234f52;
+    opacity: 1;
+    cursor: pointer;
+}
+
+nav#organisateurNavigation li i {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+nav#organisateurNavigation li {
+    position: relative; /* important pour positionner la flèche */
+}
+
+nav#organisateurNavigation li:not(:last-child)::after {
+    content: "›";
+    position: absolute;
+    right: -.8rem;  /* ajuste selon le spacing entre les <li> */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #234f52;
+    opacity: .5;
+    pointer-events: none; /* la flèche ne doit pas gêner le clic */
+}
+
+nav#organisateurNavigation li.validee::before,
+nav#organisateurNavigation li.locked::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    opacity: .5;
+    font-weight: 900;
+    position: absolute;
+    bottom: 0.1rem;
+    right: 0.4rem;
+    font-size: 1.2rem;
+    color: #234f52;
+    pointer-events: none;
+}
+
+nav#organisateurNavigation li.locked::before {
+    content: "\f023";
+    font-size: 0.9rem;
+}
+
+nav#organisateurNavigation li.erreur::before {
+    content: "\21";
+    font-family: "Font Awesome 6 Free";
+    opacity: .5;
+    font-weight: 900;
+    position: absolute;
+    bottom: 0.1rem;
+    right: 1.4rem;
+    font-size: 1.2rem;
+    color: #900;
+    pointer-events: none;
+}
+
+/* Pastille notification */
+nav#organisateurNavigation .badge-erreur {
+    position: absolute;
+    bottom: -0.4rem;
+    right: -0.4rem;
+    background-color: #c94e4e;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    min-width: 1.5rem;
+    text-align: center;
+    line-height: 1rem;
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+
+nav#organisateurNavigation li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+nav#organisateurNavigation li.actif {
+    border-width: 1px 1px 7px 1px;
+    opacity: 1;
+}
+
+#headerOrganisateur {
+    background-color: #27cd7c;
+    color:#fff;
+    border-bottom: 0;
+}
+
+#headerOrganisateur img {
+    max-height: 30px;
+}
+
+a.btn-organisateur-logout * {
+    line-height: 1;
+    color:#555;
+    font-size: .8rem;
+}
+a.btn-organisateur-logout:hover {
+    text-decoration: none;
+}
+
+#headerOrganisateur .logo span {
+    color: #fff;
+}
+#headerOrganisateur .btn-organisateur-logout i,
+#headerOrganisateur .btn-organisateur-logout span {
+    color: #fff;
+}
+
+.mainarea.container {
+    max-width: 100%;
+    border-top: 1px solid #ccc;
+    border-radius: 0;
+    margin: 0;
+    min-height: 100vh ;
+    padding-bottom: 50px;
+    background: #f9f9f9;
+}
+
+.container-etape-organisateur h2 {
+    font-weight: normal;
+    margin-top: -5px;
+    font-size: 1.5rem;
+}
+
+.container-etape-organisateur h3 {
+    font-weight: normal;
+    font-size: 1rem;
+    padding: 1rem .2rem .25rem;
+}
+.container-etape-organisateur h3 > i {
+    opacity: .3;
+}
+
+.container-etape-organisateur .alert {
+    padding: .75rem 1.25rem;
+    font-size: .9rem;
+}
+
+.point-info,
+.point-info-interieur,
+.point-info-th {
+    cursor: pointer;
+    color: #555;
+    opacity: .75;
+}
+.point-info:hover,
+.point-info-interieur:hover,
+.point-info-th:hover {
+    opacity: 1;
+    color: #234f52;
+}
+.point-info-interieur {
+    position: absolute;
+    top:6px;
+    right: 25px;
+}
+
+.point-info-th {
+    color: #eee;
+}
+.point-info-th:hover {
+    color: #fff;
+}
+
+.point-info-interieur.head-bureau {
+    top:11px;
+    right: 15px;
+    color:#fff;
+}
+
+.point-info-interieur.foot-bureau {
+    position: relative;
+    top:1px;
+    left: 3px;
+}
+
+fieldset.bloc-dynamique {
+    background-color: #eee;
+    width: 100%;
+    margin: 5px 15px 15px;
+    padding: 0 15px 15px;
+}
+
+
+.container-etape-organisateur .btn-dark {
+    background-color: #535353;
+}
+
+.container-etape-organisateur .btnValiderEtape,
+.container-etape-organisateur .btnSaveVote {
+    padding: 1.25rem .5rem;
+}
+
+.container-etape-organisateur a.btnAnnulerVote {
+    display: block;
+}
+
+.btnSupprSiret > i {
+    color: #900;
+}
+
+.btnAddSiret > i {
+    color: #333;
+}
+
+@keyframes clignoter-rouge-smooth {
+    0%, 100% {
+        border-color: rgba(255, 0, 0, 0.1); /* rouge très clair bordure */
+        background-color: rgba(255, 0, 0, 0.05); /* rouge très clair fond */
+    }
+    50% {
+        border-color: rgb(153, 0, 0);   /* rouge vif bordure */
+        background-color: rgba(153, 0, 0, 0.1); /* rouge clair fond */
+    }
+}
+
+@keyframes clignoter-bleu-smooth {
+    0%, 100% {
+        border-color: rgba(0, 81, 255, 0.1);
+        background-color: rgba(0, 72, 255, 0.05);
+    }
+    50% {
+        border-color: rgb(0, 77, 153);
+        background-color: rgba(0, 66, 153, 0.1);
+    }
+}
+
+.erreurouge {
+    animation: clignoter-rouge-smooth 1s ease-in-out 2;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.champbleu {
+    animation: clignoter-bleu-smooth 1s ease-in-out 3;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.sa-confirm-button-container .confirm.btn.btn-lg.btn-primary {
+    background-color: #234f52;
+}
+
+footer#footer-organisateur {
+    background-color: #fbfbfb;
+    color: #444;
+    font-size: .6rem;
+    padding: .3rem;
+    opacity: .6;
+}
+
+#organisateurAide i.fa-book-bookmark {
+    font-size: 12em;
+    opacity: .3;
+    color: #3a7156;
+    margin-left: -10px;
+}
+
+.btnCommencerGuide {
+    padding: 1em 5em;
+    font-size: 1em;
+}
+
+.showSweetAlert h2 {
+    font-weight: normal;
+    font-size: 1rem;
+}
+
+.showSweetAlert p.lead  {
+    font-size: 1rem;
+}
+
+.showSweetAlert .btn-primary:not(:disabled):not(.disabled).active,
+.showSweetAlert .btn-primary:not(:disabled):not(.disabled):focus,
+.showSweetAlert .show > .btn-primary.dropdown-toggle {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+#organisateurAide h2 span {
+    display: block;
+    font-size: 1.1rem;
+    color: #234f52;
+}
+
+#organisateurAide ul {
+    padding-left: 1.5rem !important;
+    padding-top:5px;
+}
+
+.alert .flechebas {
+    position: relative;
+    top: 5px;
+}
+
+.alert-info code {
+    color: #417750;
+}
+
+textarea#electionDescription {
+    resize: none;
+    height: 307px;
+}
+textarea#rappelTexte {
+    resize: vertical;
+    height: 120px;
+    min-height: 120px;
+    max-height: 300px;
+}
+
+.dropzone {
+    padding: 25px;
+    font-size: .8em !important;
+    margin-bottom: 5px;
+}
+
+.progress {
+    height: .5em;
+}
+
+.answer {
+    padding: .5rem 1.25rem !important;
+    font-size: .8em !important
+}
+
+.btnSupprimerBackground,
+.btnSupprimerLogo {
+    font-size: .7em !important;
+    padding: 2px 5px !important;
+}
+
+.supprimageOk {
+    background-color: #d9e7d6;
+    border: 1px solid #adc799;
+    border-radius: 5px;
+    padding: .5rem;
+    text-align: center;
+    font-size: .8em !important;
+    margin-top: 18px;
+}
+
+fieldset.bloc-dynamique legend {
+    color: #444;
+    margin-bottom: 10px;
+}
+
+fieldset.bloc-dynamique .card-header {
+    font-size: .9em;
+}
+
+#blocColleges .btn-link.btnAddCollege,
+#blocColleges .btn-link.btnSupprCollege,
+#blocColleges .btn-link.btnAddCollege:hover,
+#blocColleges .btn-link.btnSupprCollege:hover,
+.table-o .btn-link.btnEditListesVote,
+.table-o .btn-link.btnEditVote,
+.table-o .btn-link.btnSupprVote,
+.table-o .btn-link.btnEditVote:hover,
+.table-o .btn-link.btnSupprVote:hover,
+.table-o .btn-link.btnEditCandidat,
+.table-o .btn-link.btnEditCandidat:hover,
+.table-o .btn-link.btnSupprCandidat,
+.table-o .btn-link.btnSupprCandidat:hover,
+.table-o .btn-link.btnEnvoyerIdentifiants,
+.table-o .btn-link.btnDefinirCleDep,
+.table-o .btn-link.btnScellerUrne,
+.table-o .btn-link.btnSuiviMdpVote,
+.table-o .btn-link.btnScellementUrne,
+.table-o .btn-link.btnRenvoyerAcces,
+.table-o .btn-link.btnDefinirCleDep:hover,
+.table-o .btn-link.btnRenvoyerAcces:hover,
+.table-o .btn-link.btnScellerUrne:hover,
+.table-o .btn-link.btnSuiviMdpVote:hover,
+.table-o .btn-link.btnScellementUrne:hover,
+.table-o .btn-link.btnEnvoyerIdentifiants:hover {
+    transition: all .3s ease-in-out;
+    padding: 6px 3px;
+}
+
+.table-o .btn-link.btnDefinirCleDep,
+.table-o .btn-link.btnSuiviMdpVote,
+.table-o .btn-link.btnScellerUrne {
+    font-size: 1em;
+    text-decoration: none;
+}
+
+#blocColleges .btn-link.btnAddCollege {
+    color: #333;
+}
+
+#blocColleges .btn-link.btnAddCollege:hover {
+    color: #234f52;
+}
+
+#blocColleges .btn-link.btnSupprCollege,
+.table-o .btn-link.btnEditVote,
+.table-o .btn-link.btnEditElecteur,
+.table-o .btn-link.btnEditListesVote,
+.table-o .btn-link.btnEditMembreBureau,
+.table-o .btn-link.btnSupprMembreBureau,
+.table-o .btn-link.btnCodesMembreBureau,
+.table-o .btn-link.btnEditObservateur,
+.table-o .btn-link.btnSupprObservateur,
+.table-o .btn-link.btnCodesObservateur,
+.table-o .btn-link.btnSupprVote,
+.table-o .btn-link.btnSupprElecteur,
+.table-o .btn-link.btnEditListe,
+.table-o .btn-link.btnSupprListe,
+.table-o .btn-link.btnEditCandidat,
+.table-o .btn-link.btnSupprCandidat,
+.table-o .btn-link.btnScellerUrne,
+.table-o .btn-link.btnSuiviMdpVote,
+.table-o .btn-link.btnScellementUrne,
+.table-o .btn-link.btnRenvoyerAcces,
+.table-o .btn-link.btnEnvoyerIdentifiants {
+    color: #999;
+}
+
+.table-o .btn-link.btnDefinirCleDep {
+    color: #1c7430;
+}
+
+#blocColleges .btn-link.btnSupprCollege:hover,
+.table-o .btn-link.btnSupprVote:hover,
+.table-o .btn-link.btnSupprMembreBureau:hover,
+.table-o .btn-link.btnSupprObservateur:hover,
+.table-o .btn-link.btnSupprElecteur:hover,
+.table-o .btn-link.btnSupprListe:hover,
+.table-o .btn-link.btnSupprCandidat:hover {
+    color: #900;
+}
+
+.table-o .btn-link.btnEditVote:hover,
+.table-o .btn-link.btnEditMembreBureau:hover,
+.table-o .btn-link.btnEditListesVote:hover,
+.table-o .btn-link.btnCodesMembreBureau:hover,
+.table-o .btn-link.btnCodesObservateur:hover,
+.table-o .btn-link.btnEditObservateur:hover,
+.table-o .btn-link.btnEditElecteur:hover,
+.table-o .btn-link.btnEditListe:hover,
+.table-o .btn-link.btnEditCandidat:hover,
+.table-o .btn-link.btnDefinirCleDep:hover,
+.table-o .btn-link.btnScellerUrne:hover,
+.table-o .btn-link.btnSuiviMdpVote:hover,
+.table-o .btn-link.btnScellementUrne:hover,
+.table-o .btn-link.btnRenvoyerAcces:hover,
+.table-o .btn-link.btnEnvoyerIdentifiants:hover {
+    color: #007599;
+}
+
+
+.text-warning-fonce {
+    color: #ff8800;
+}
+
+.table-o .th-option {
+    width: 50px;
+}
+
+.table-o .th-option-c {
+    width: 100px;
+}
+
+.table-o .th-option-cc {
+    width: 150px;
+}
+
+#blocColleges .codeCsv {
+    font-size: .8em;
+    color: #777;
+    position: relative;
+    top: 6px;
+}
+
+#blocColleges .codeCsv code {
+    font-size: 1.2em;
+    color: #234f52;
+}
+
+#newCollegeCodeCsv {
+    width: 200px;
+}
+
+label.tiny-label {
+    font-size: .8em;
+    padding-left: 2px;
+    color: #777;
+}
+
+textarea#voteDescription {
+    resize: none;
+    height: 110px;
+}
+
+.groupe-champs-light {
+    background-color: #e5e5e5;
+    padding: 4px 8px;
+    font-size: .9em;
+}
+
+.colleges-denominations {
+    padding-left:8px;
+    font-size: .9em;
+}
+
+.vote-options-bloc em {
+    font-size: .8em;
+    font-style: normal;
+    color: #777;
+}
+
+.input-with-icon {
+    position: relative;
+    display: block;
+    width: 100%; /* ou une largeur fixe si nécessaire */
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding-right: 2.5rem; /* espace pour ne pas chevaucher l’icône */
+    box-sizing: border-box;
+}
+
+.input-with-icon::after {
+    content: "\f783"; /* Unicode de fa-calendar-alt (Font Awesome 5) */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900; /* requis pour les icônes solides */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.ui-datepicker .ui-widget-content {
+    color: #c82333;
+}
+
+fieldset.fieldset-bloc {
+    background-color: #e5e5e5;
+    padding: 15px 0;
+}
+
+.container-options-grises {
+    background-color: #e5e5e5;
+    padding: 8px 0 15px 0;
+}
+
+.choixTutuSup,
+.choixTour {
+    padding: 10px;
+}
+
+.choixTutuSup > i,
+.choixTour > i,
+fieldset.fieldset-bloc > i {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 2em;
+    opacity: .2;
+}
+
+fieldset.fieldset-bloc > i {
+    top: 12px;
+}
+
+#organisateurNavigation ul li.actif i.actif-ifa {
+    position: absolute;
+    bottom: -28px;
+}
+
+#organisateurNavigation ul li.actif i.actif-ifa-validee {
+    color: #adc799;
+}
+
+.flier {
+    pointer-events: none;
+}
+
+.flier > * {
+    animation: fly 50s linear infinite;
+    pointer-events: none !important;
+    top: 0;
+    left: 0;
+    transform: translateX(-120%) translateY(-120%) rotateZ(0);
+    position: fixed;
+    animation-delay: 1s;
+    z-index: 999999;
+}
+
+@keyframes fly {
+    98.001%, 0% {
+        display: block;
+        transform: translateX(-200%) translateY(100vh) rotateZ(0deg)
+    }
+    15% {
+        transform: translateX(100vw) translateY(-100%) rotateZ(180deg)
+    }
+    15.001%, 18% {
+        transform: translateX(100vw) translateY(-30%) rotateZ(0deg)
+    }
+    40% {
+        transform: translateX(-200%) translateY(3vh) rotateZ(-180deg)
+    }
+    40.001%, 43% {
+        transform: translateX(-200%) translateY(-100%) rotateZ(-180deg)
+    }
+    65% {
+        transform: translateX(100vw) translateY(50vh) rotateZ(0deg)
+    }
+    65.001%, 68% {
+        transform: translateX(20vw) translateY(-200%) rotateZ(180deg)
+    }
+    95% {
+        transform: translateX(10vw) translateY(100vh) rotateZ(0deg)
+    }
+}
+
+.btnAddElecteur.btn-dark,
+.btnAddMembre.btn-dark,
+.btnAddCsv.btn-dark {
+    padding: 3px 6px;
+    font-size: .9em;
+}
+
+#addAfterSaveContainer {
+    cursor: pointer;
+}
+
+#formElecteurs table tbody td .badge {
+    font-weight:normal;
+    font-size: 13px;
+    padding: .4em;
+    background-color: #8e9134;
+}
+
+#formElecteurs table tbody td .badge-primary {
+    background-color: #7ba0c8;
+}
+
+#formElecteurs #DataTables_Table_0_filter {
+    margin-bottom: 10px;
+}
+
+#formElecteurs #DataTables_Table_0_paginate {
+    margin-top: 10px;
+    opacity: .4;
+    transition: background-color 1s ease;
+}
+
+#formElecteurs #DataTables_Table_0_paginate:hover {
+    opacity: 1;
+    transition: background-color 1s ease;
+}
+
+#formElecteurs #DataTables_Table_0_filter.dataTables_filter label::after {
+    top:auto;
+}
+
+#formElecteurs .dt-electeurs-restants {
+    opacity: .5;
+    color:#234f52;
+    font-size: .9em;
+    padding-left: 5px;
+}
+
+.text-strike {
+    text-decoration: line-through;
+}
+
+#formImport .prt3 {
+    position: relative;
+    top: 3px;
+}
+
+#formImport .prtm7 {
+    position: relative;
+    top: -7px;
+}
+
+.swal-content-left .swal2-html-container {
+    text-align: left;
+}
+
+#overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    visibility: hidden;
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #579569;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.text {
+    color: white;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+}
+
+#formMembres table tbody td,
+#formObservateurs table tbody td,
+#votesListes table tbody td,
+#listeVoteContent table tbody td,
+#listeCandidats table tbody td {
+    vertical-align: middle;
+}
+
+.large-checkbox {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+#formMembres .top-head td,
+#formMembres .top-head th {
+    border-top: none;
+}
+
+#formMembres .top-head th {
+    border-bottom: 1px solid #aaa;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#formMembres tfoot td {
+    background-color: #ccc;
+}
+
+.fa-stack.small {
+    font-size: 0.75em;
+}
+.fa-stack i {
+    vertical-align: middle;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+#apercuPdfListe > i,
+#apercuPdfCandidat > i {
+    transition: all .3s ease-in-out;
+    color: #0c5460;
+    font-size: 5em;
+    opacity: .6;
+}
+#apercuPdfListe > i:hover,
+#apercuPdfCandidat > i:hover {
+    transition: all .3s ease-in-out;
+    opacity: 1;
+}
+
+.btnAddOrganisationSyndicale,
+.btnSupprOrganisationSyndicale,
+.btnSupprLigneCommune,
+.btnAddLigneCommune {
+    transition: all .3s ease-in-out;
+    opacity: .6;
+    cursor: pointer;
+    font-size: 1.5em;
+    margin-top: .3em;
+    color: #1e7e34;
+}
+
+.btnSupprOrganisationSyndicale,
+.btnSupprLigneCommune {
+    color: #555;
+    padding-right: 10px;
+}
+
+.btnAddOrganisationSyndicale:hover,
+.btnSupprOrganisationSyndicale:hover,
+.btnSupprLigneCommune:hover,
+.btnAddLigneCommune:hover {
+    transition: all .3s ease-in-out;
+    opacity: 1;
+}
+
+.btnSupprOrganisationSyndicale:hover,
+.btnSupprLigneCommune:hover {
+    transition: all .3s ease-in-out;
+    opacity: 1;
+    color: #900;
+}
+
+.move-candidat {
+    cursor: grab;
+}
+.move-candidat:active {
+    cursor: grabbing;
+}
+
+.aperçu-photo-candidat {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+.ifa-pdf-candidat {
+    transition: all .3s ease-in-out;
+    color: #0c5460;
+    opacity: .5;
+    font-size: 30px;
+}
+
+.ifa-pdf-candidat:hover {
+    transition: all .3s ease-in-out;
+    opacity: 1;
+}
+
+#urnesOrganisateur .card .infovotebadge mark {
+    width: calc(100% - 45px);
+}
+
+#rappelTexteCompteur {
+    font-size: 11px;
+    float:right;
+    position: relative;
+    bottom: -6px;
+    background-color: #ececec;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    padding: 1px 4px;
+    min-width: 200px;
+    text-align: right;
+    border-top-left-radius: 20px;
+}
+
+#rappelTexteCompteur.is-invalid,
+#rappelTexteCompteur.is-over-limit {
+    color: #990000;
+}
+
+#mails2rappel .text-info-rappel {
+    color: #858585;
+    line-height: 1em;
+    font-size: 12px;
+    font-style: italic;
+    padding-left: 5px;
+}
+
+#mails2rappel .text-info-rappel a,
+#mails2rappel .text-info-rappel a:hover,
+#mails2rappel .text-info-rappel a:active {
+    color: #858585;
+}
+
+#mails2rappel .text-info-rappel:last-child {
+    margin-top: 5px;
+}

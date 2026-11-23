@@ -1,0 +1,38 @@
+{
+    "etes_vous_sur": {
+        "fr": "Etes-vous sûr ?",
+        "en": "Are you sure?"
+    },
+    "oui": {
+        "fr": "Oui !",
+        "en": "Yes!"
+    },
+    "annuler": {
+        "fr": "Annuler",
+        "en": "Cancel"
+    },
+    "binome": {
+        "fr": "binôme",
+        "en": "pair"
+    },
+    "candidat": {
+        "fr": "candidat",
+        "en": "candidate"
+    },
+    "blanc": {
+        "fr": "blanc",
+        "en": "blank"
+    },
+    "nul": {
+        "fr": "nul",
+        "en": "invalid"
+    },
+    "msg_aucun_choix": {
+        "fr": "Vous n’avez sélectionné aucun #_choix_#, votre vote sera considéré comme un vote #_blancnul_#.",
+        "en": "You have not selected any #_choix_#, your vote will be considered as #_blancnul_#."
+    },
+    "msg_min_choix": {
+        "fr": "Vous avez sélectionné moins de #_nb_# #_choix_#s, êtes-vous sûr ?",
+        "en": "You have selected less than #_nb_# #_choix_#s, are you sure?"
+    }
+}

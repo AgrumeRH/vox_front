@@ -1,0 +1,28 @@
+{% extends 'templates/app.twig' %}
+{% set pagetitle = 'RGPD' %}
+{% set activemenu = 'rgpd' %}
+
+{% block content %}
+	<div class="row" id="rgpd">
+		<div class="col-md-12">
+			{% include '/templates/rgpdtext.twig' %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block navigation %}
+    {% if area == '' %}
+	    {% include 'templates/visitornav.twig' %}
+    {% elseif area == 'electeur' %}
+	    {% include '/electeur/navigation.twig' %}
+    {% elseif area == 'observer' %}
+	    {% include '/observer/navigation.twig' %}
+    {% elseif area == 'manager' %}
+	    {% include '/manager/navigation.twig' %}
+    {% elseif area == 'admin' %}
+	   {% include '/admin/navigation.twig' %}
+	{% elseif area == 'expert' %}
+	   {% include '/expert/navigation.twig' %}
+    {% endif %}
+{% endblock %}

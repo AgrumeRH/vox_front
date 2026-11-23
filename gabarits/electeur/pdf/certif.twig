@@ -1,0 +1,33 @@
+{% extends 'templates/pdf.twig' %}
+
+{% block content %}
+<style>
+    .area{
+        line-height:18px;
+        background-color:white;
+        border:1px solid #cccccc;
+        padding:10px;
+        color:#333333;
+    }
+</style>
+<page backcolor="#f8f9fa">
+    <div class="area">
+        <h1>Accusé de réception de vote</h1>
+        <h2>{{ election.election_name }}</h2>
+
+        {% if type == 'referendum' or type == 'porteurs' or type == 'votemultiple' %}
+            <h3>Vote électronique</h3>
+        {% else %}
+            <h3>Collège {{ vote.vote_college }}  - {{ vote.vote_category|capitalize }}</h3>
+            <h3>{% if vote.vote_tour == 1 %}Premier tour{% else %}Second tour{% endif %}</h3>
+        {% endif %}
+
+        <br/><br/>
+
+        Le {{ emarge.emarge_date|date(constant('DATETIME_FORMAT')) }}, {{ emarge.emarge_nom }} {{ emarge.emarge_prenom }} (identifiant {{ emarge.emarge_username }}) a voté pour le vote des {{ vote.vote_category }} du collège {{ vote.vote_college }}.<br/>
+        Le vote a été enregistré depuis l'adresse IP {{ emarge.emarge_ip }}, avec le navigateur {{ emarge.emarge_agent }}.<br/><br/>
+        La référence d'émargement est : {{ emarge.emarge_key }}<br/>
+        Cette référence atteste votre participation. Elle ne permet pas de retrouver votre bulletin dans l'urne.
+    </div>
+</page>
+{% endblock %}

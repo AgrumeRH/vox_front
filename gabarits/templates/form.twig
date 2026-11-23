@@ -1,0 +1,336 @@
+{% macro input(label,value,placeholder,name,help,fa,class,attribute,col) %}
+	<div class="form-group {% if col %}col-lg-{{ col }}{% endif %}">
+		{% if label != "" %}
+			<label for="{{ name | alphanum }}">
+				{% if fa %}
+					<i class="fa-solid fa-{{ fa }} mr-1 text-secondary"></i>
+				{% endif %}
+				{{ label }}</label>
+		{% endif %}
+		<input autocomplete="off" type="text" class="form-control {% if class %}{{ class }}{% endif %}" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}" {% if attribute %} {{ attribute }}="{{ attribute }}" {% endif %}/>
+
+		{% if help %}
+			<small class="form-text text-muted">{{ help }}</small>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro color(label,value,placeholder,name,help) %}
+	<div class="form-group">
+		<input autocomplete="off" type="color" class="form-control color-input" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}"/>
+		{% if label != "" %}
+			<label for="{{ name | alphanum }}">{{ label }}</label>
+		{% endif %}
+		{% if help %}
+			<small class="form-text text-muted">{{ help }}</small>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro number(label,value,placeholder,name,help,min,max,step) %}
+	<div class="form-group">
+		{% if label != "" %}
+			<label for="{{ name | alphanum }}">{{ label }}</label>
+		{% endif %}
+		<input autocomplete="off" type="number" class="form-control" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}" 
+			{% if min is not null %}min="{{ min }}"{% endif %}
+			{% if max is not null %}max="{{ max }}"{% endif %}
+			{% if step is not null %}step="{{ step }}"{% endif %}/>
+		{% if help %}
+			<small class="form-text text-muted">{{ help }}</small>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro phone(label,value,placeholder,name) %}
+	<div class="form-group">
+		<label for="{{ name | alphanum }}">{{ label }}</label>
+		<input type="text" class="form-control" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}"/>
+	</div>
+{% endmacro %}
+
+{% macro email(label,value,placeholder,name,fa) %}
+	<div class="form-group">
+		{% if label %}<label for="{{ name | alphanum }}">{% endif %}
+			{% if fa %}
+				<i class="fa-solid fa-{{ fa }} mr-1 text-secondary"></i>
+			{% endif %}
+			{{ label }}</label>
+		<input type="email" class="form-control" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}"/>
+	</div>
+{% endmacro %}
+
+{% macro display(label,value,help) %}
+	<div class="form-group">
+		<label>{{ label }}</label>
+		<div class="form-control">{{ value }}</div>
+		{% if help %}
+			<small class="form-text text-muted">{{ help }}</small>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro date(label,value,name) %}
+	<div class="form-group">
+		<label for="{{ name | alphanum }}">{{ label }}</label>
+		<div class="input-group">
+			<select class="form-control" name="{{ name }}[day]">
+				<option value="">{{ trad('jour', lang) }}</option>
+				{% for i in range(1,31) %}
+					<option value="{{ "%02d"|format(i) }}" {% if "%02d"|format(i) == value.day %} selected="selected" {% endif %}>{{ "%02d"|format(i) }}</option>
+				{% endfor %}
+			</select>
+			<select class="form-control" name="{{ name }}[month]">
+				<option value="">{{ trad('mois', lang) }}</option>
+				{% set mois_noms = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] %}
+
+				{% for i in range(1, 12) %}
+					<option value="{{ "%02d"|format(i) }}" {% if "%02d"|format(i) == value.month %}selected="selected"{% endif %}>
+						{{ "%02d"|format(i) }} - {{ mois_noms[i] }}
+					</option>
+				{% endfor %}
+
+			</select>
+			<select class="form-control" name="{{ name }}[year]">
+				<option value="">{{ trad('annee', lang) }}</option>
+				{# Aucun contrôle d'âge : la date saisie est seulement comparée côté serveur
+				   à la date importée. #}
+				{% set anneeMax = "now"|date("Y") %}
+				{% set anneeMin = 1900 %}
+
+				{% for i in range(anneeMax,anneeMin) %}
+					<option value="{{ i }}" {% if i == value.year %} selected="selected" {% endif %}>{{ i }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro password(label,value,placeholder,name,help,fa) %}
+	<div class="form-group">
+		<label for="{{ name | alphanum }}">
+			{% if fa %}
+				<i class="fa-solid fa-{{ fa }} mr-1 text-secondary"></i>
+			{% endif %}
+			{{ label }}</label>
+		<input autocomplete="off" data-focus="mot-de-passe" type="input" class="form-control" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}"/>
+		{% if help %}
+			<small class="form-text text-muted">{{ help }}</small>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro textarea(label,value,placeholder,name,class) %}
+	<div class="form-group">
+		{% if label %}<label for="{{ name | alphanum }}">{{ label }}</label>{% endif %}
+		<textarea class="form-control {% if class %}{{class}}{% endif %}" id="{{ name | alphanum }}" name="{{ name }}" placeholder="{{ placeholder }}">{{ value }}</textarea>
+	</div>
+{% endmacro %}
+
+
+{% macro radio(label,selectedValue,value,name,fa,hid,class) %}
+	<div class="custom-control custom-radio {% if hid %}hid{% endif %}">
+		<input type="radio" {% if value is same as(selectedValue) %} checked="checked" {% endif %} id="{{ name | alphanum }}_{{ value | alphanum }}" name="{{ name }}" value="{{ value }}" class="custom-control-input">
+		<label class="custom-control-label {% if class %}{{ class }}{% endif %}" for="{{ name | alphanum }}_{{ value | alphanum }}">
+			{% if fa %}
+				<i class="fa-solid fa-{{ fa }} fa-fw fa-sm text-secondary mr-1"></i>
+			{% endif %}
+			{{ label }}</label>
+	</div>
+{% endmacro %}
+
+{% macro upload(label,value,name,destination,apercu,supprimer) %}
+	<div class="form-group">
+	{% if label != '' %}<label class="mb-1" for="{{ name | alphanum }}">{{ label }}</label>{% endif %}
+		<div {% if apercu %} class="row" {% endif %}>
+			{% if apercu  %}
+				<div class="col-6 col-md-3">
+					{% if (apercu == 'background' and election.election_background != '') or (apercu == 'logo' and election.election_logo != '') %}
+						<img src="{{ base_url() }}/custom/{{ value }}" class="upload-apercu" alt="aperçu image de fond"/>
+					{% endif %}
+					{% if apercu == 'background' and election.election_background != '' %}
+						<a class="btn btn-secondary btn-icon w-100 mt-2 noloader" href="{{ path_for('admin.election.download',{type:'background',file:election.election_background}) }}">
+							<i class="fa fa-download fa-fw"></i>
+							Télécharger</a>
+					{% elseif apercu == 'logo' and election.election_logo != '' %}
+						<a class="btn btn-secondary btn-icon w-100 mt-2 noloader" href="{{ path_for('admin.election.download',{type:'logo',file:election.election_logo}) }}">
+							<i class="fa fa-download fa-fw"></i>
+							Télécharger</a>
+					{% else %}
+						<span class="btn btn-outline-secondary disabled btn-icon w-100 mt-2 noloader" disabled>
+							<i class="fa fa-download fa-fw"></i>
+							Télécharger</span>
+					{% endif %}
+					{% if supprimer and apercu == 'background' and election.election_background != '' %}
+						<a class="btn btn-danger btn-icon w-100 mt-2 noloader" href="{{ path_for('admin.election.supprimage',{type:'background',file:election.election_background}) }}">
+							<i class="fa fa-trash fa-fw"></i>
+							Supprimer</a>
+					{% endif %}
+					{% if supprimer and apercu == 'logo' and election.election_logo != '' %}
+						<a class="btn btn-danger btn-icon w-100 mt-2 noloader" href="{{ path_for('admin.election.supprimage',{type:'logo',file:election.election_logo}) }}">
+							<i class="fa fa-trash fa-fw"></i>
+							Supprimer</a>
+					{% endif %}
+				</div>
+				<div class="col-6 col-md-9">
+				{% endif %}
+				<div class="dropzone t-14">Déposez votre fichier ici<br>ou cliquez pour sélectionner.</div>
+				<input type="file" style="display:none" class="fileupload" data-url="{{ destination }}" name="file"/>
+				<input type="hidden" name="{{ name }}" value="{{ value }}"/>
+				<div class="answer"></div>
+				<div class="progress">
+					<div class="progress-bar"></div>
+				</div>
+				{% if apercu %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro uploadphoto(label,value,name,destination) %}
+
+	<div class="form-group uploadphoto">
+		<div>
+			<div class="dropzone">
+				{% if value %}
+					<span class="photo photo-small" style="background-image:url('{{ base_url() }}/photos/{{ value }}');"></span>
+				{% else %}
+					<span class="fa-stack">
+						<i class="fas fa-circle fa-stack-2x text-info"></i>
+						<i title="Ajouter/modifier la photo" class="action text-white photostate fa-solid fa-camera fa-stack-1x fa-inverse"></i>
+					</span>
+				{% endif %}
+			</div>
+			<input type="file" style="display:none" class="fileupload fileupload-photo" data-url="{{ destination }}" name="file"/>
+			<input type="hidden" name="{{ name }}" value="{{ value }}"/>
+			<div class="answer d-none"></div>
+			<div class="progress">
+				<div class="progress-bar"></div>
+			</div>
+		</div>
+	</div>
+
+{% endmacro %}
+
+{% macro uploadfoi(label,value,name,destination) %}
+
+	<div class="form-group uploadphoto">
+		<div>
+			<div class="dropzone">
+				{% if value %}
+					<span class="fa-stack">
+						<i class="fas fa-circle fa-stack-2x text-danger"></i>
+						<i title="Changer de fichier" class="action text-white photostate fa-solid fa-file-pdf fa-stack-1x fa-inverse"></i>
+					</span>
+				{% else %}
+					<span class="fa-stack">
+						<i class="fas fa-circle fa-stack-2x text-secondary"></i>
+						<i title="Ajouter un fichier" class="action text-white photostate fa-solid fa-file-pdf fa-stack-1x fa-inverse"></i>
+					</span>
+				{% endif %}
+			</div>
+			<input type="file" style="display:none" class="fileupload fileupload-photo" data-url="{{ destination }}" name="file"/>
+			<input type="hidden" name="{{ name }}" value="{{ value }}"/>
+			<div class="answer d-none"></div>
+			<div class="progress">
+				<div class="progress-bar"></div>
+			</div>
+		</div>
+	</div>
+
+{% endmacro %}
+
+{% macro datetime(label,value,name,skiprow) %}
+	{% if not skiprow %}
+		<div class="row">
+			<div class="col-lg-6">
+			{% endif %}
+			<div class="form-group">
+				<label for="{{ name | alphanum }}">{{ label }}</label>
+				<div>
+					<input type="text" class="form-control datetime" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}">
+				</div>
+			</div>
+			{% if not skiprow %}
+			</div>
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro inputdate(label,value,name, col) %}
+
+
+
+			<div class="form-group 	{% if col %} col-lg-{{ col }}{% endif %}">
+				{% if label != '' %}
+					<label for="{{ name | alphanum }}">{{ label }}</label>
+				{% endif %}
+				<div>
+					<input type="date" class="form-control" value="{{ value }}" id="{{ name | alphanum }}" name="{{ name }}">
+				</div>
+			</div>
+
+{% endmacro %}
+
+{% macro checkbox(label, selectedValue, value, name, photo, small, fontsize, css, nostrike) %}
+
+	{% if nostrike == 1 %}
+		<div class=" custom-checkbox nostrike-parentchoice
+		 {% if small != '' and small != null %}small{% endif %}
+		 {% if photo != '' and photo != null %}custom-checkbox-photo{% endif %}">
+			<input type="checkbox" checked="checked" hidden id="{{ name | alphanum }}_{{ value | alphanum }}" name="{{ name }}" value="{{ value }}" style="display:none;" class="nostrike-choice">
+			<input type="checkbox" checked="checked" disabled style="pointer-events:none;" id="{{ name | alphanum }}_{{ value | alphanum }}" name="{{ name }}" value="{{ value }}" class="custom-control-input">
+			<label class=" {% if css != '' and css != null %}{{css}}{% endif %}" {% if fontsize != null %}style="font-size:{{ fontsize }}px;line-height:1em;"{% endif %} for="{{ name | alphanum }}_{{ value | alphanum }}">
+				{% if photo != '' and photo != null %}
+					<span class="photo" style="background-image:url('{{ base_url() }}/photos/{{ photo }}');"></span>
+					<p class="float-right">{{ label }}</p>
+				{% else %}
+					{{ label }}
+				{% endif %}
+			</label>
+		</div>
+	{% else %}
+		<div class="custom-control custom-checkbox
+		 {% if small != '' and small != null %}small{% endif %}
+		 {% if photo != '' and photo != null %}custom-checkbox-photo{% endif %}">
+			<input type="checkbox" {% if value == selectedValue %} checked="checked" {% endif %} id="{{ name | alphanum }}_{{ value | alphanum }}" name="{{ name }}" value="{{ value }}" class="custom-control-input">
+			<label class="custom-control-label {% if css != '' and css != null %}{{css}}{% endif %}" {% if fontsize != null %}style="font-size:{{ fontsize }}px;line-height:1em;"{% endif %} for="{{ name | alphanum }}_{{ value | alphanum }}">
+				{% if photo != '' and photo != null %}
+					<span class="photo" style="background-image:url('{{ base_url() }}/photos/{{ photo }}');"></span>
+					<p class="float-right">{{ label }}</p>
+				{% else %}
+					{{ label }}
+				{% endif %}
+			</label>
+		</div>
+	{% endif %}
+
+{% endmacro %}
+
+{% macro alert(id, type, content, fa) %}
+	<div id="{{id}}" class="alert alert-{{type}}">
+	{% if fa is null %}
+	  {% set fa = 'info' %}
+	{% endif %}
+	    <span class="alert-icon">
+	      <i class="fa-solid fa-{{ fa }}"/>
+		</span>
+		<div>
+		<p>{{content | e }}</p>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro csrf(values) %}
+	{% for name,value in values %}
+		<input class="csrf" type="hidden" name="{{ name }}" value="{{ value }}"/>
+	{% endfor %}
+{% endmacro %}
+
+{% macro overlay() %}
+    <div id="overlay">
+        <div class="spinner"></div>
+        <div class="text">Veuillez patienter...</div>
+    </div>
+{% endmacro %}

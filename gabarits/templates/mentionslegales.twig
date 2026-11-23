@@ -1,0 +1,47 @@
+{% extends 'templates/app.twig' %}
+{% set pagetitle = 'Mentions' %}
+{% set activemenu = 'mentions' %}
+
+{% block content %}
+	<div class="row" id="mentions">
+		<div class="col-md-12">
+            <img src="{{ election.election_url }}/img/agrume_logo_green.png" alt="" style="max-width:200px;margin-bottom:10px;float:right;"/>
+
+			<h1>{{ trad('mentionslegales', lang) }}</h1>
+
+            <p style="clear:both;" class="small">La solution de vote électronique VoxAgrume est édité par Agrume, Société par actions simplifiée au capital de 2 750 €, immatriculée au Registre du Commerce et des Sociétés de Paris, sous le numéro 827 730 532, numéro de TVA intracommunautaire FR 47 827 730 532 dont le siège social est situé Villa Créatis 2 rue des Mûriers CP 601 69258 Lyon Cedex 09 – France.</p>
+
+            <p class="small">
+            Email : <a href="mailto:contact@agrume.fr">contact@agrume.fr</a><br>
+            Téléphone : 04 28 29 28 29
+            </p>
+
+            <p class="small">
+            Directeur de la publication : Colomban de La Monneraye
+            </p>
+
+            <p class="small">
+            Les serveurs de vote sont hébergé sur l’offre Cloud d'OVH, au data-center de Gravelines (France).<br>
+            Adresse : OVHCloud 59820 Gravelines<br>
+            Téléphone : 09 72 10 10 07
+            </p>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block navigation %}
+    {% if area == '' %}
+	    {% include 'templates/visitornav.twig' %}
+    {% elseif area == 'electeur' %}
+	    {% include '/electeur/navigation.twig' %}
+    {% elseif area == 'observer' %}
+	    {% include '/observer/navigation.twig' %}
+    {% elseif area == 'manager' %}
+	    {% include '/manager/navigation.twig' %}
+    {% elseif area == 'admin' %}
+	   {% include '/admin/navigation.twig' %}
+    {% elseif area == 'expert' %}
+	   {% include '/expert/navigation.twig' %}
+    {% endif %}
+{% endblock %}

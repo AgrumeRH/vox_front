@@ -1,0 +1,19 @@
+<div class="form-group">
+	<div class="dropdown">
+		<button class="btn btn-light dropdown-toggle w-100 text-left" type="button" id="dropVotes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			{{ title }}
+		</button>
+		<div class="dropdown-menu" aria-labelledby="dropVotes">
+			{% for vote in votes %}
+
+				{% if type == 'referendum' or type == 'porteurs' or type == 'votemultiple' %}
+					{% set title = 'Vote électronique' %}
+				{% else %}
+					{% set title = 'Collège '~vote.vote_college~' - '~vote.vote_category~' - Tour '~vote.vote_tour %}
+				{% endif %}
+
+				<a class="dropdown-item" href="{{ path_for(url,{'vote_id' : vote.vote_id}) }}">{{ title }}</a>
+			{% endfor %}
+		</div>
+	</div>
+</div>

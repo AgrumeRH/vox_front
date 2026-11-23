@@ -1,0 +1,42 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set activemenu = 'electeur' %}
+
+{% block subcontent %}
+
+<h2 class="h5">{{ trad('verification_titre', lang) }}</h2>
+<p class="t-14">{{ trad('verification_intro', lang) }}</p>
+
+{% if erreur %}
+	<div class="alert alert-danger" role="alert">{{ trad(erreur, lang) }}</div>
+{% endif %}
+{% if resultat %}
+	{% if resultat.present %}
+		<div class="alert alert-success" role="status">{{ trad('verification_present', lang, {'vote': resultat.vote}) }}</div>
+	{% elseif resultat.incomplete %}
+		<div class="alert alert-warning" role="status">{{ trad('verification_incomplete', lang) }}</div>
+	{% else %}
+		<div class="alert alert-danger" role="status">{{ trad('verification_absent', lang) }}</div>
+	{% endif %}
+{% endif %}
+
+<form action="{{ path_for('electeur.verification.save') }}" method="POST" autocomplete="off">
+	<div class="form-group">
+		<label for="empreinte">{{ trad('verification_empreinte', lang) }}</label>
+		<input type="text" class="form-control text-monospace t-14" id="empreinte" name="empreinte" value="{{ empreinte }}" maxlength="200" spellcheck="false" required>
+	</div>
+	{{ form.csrf(csrf) }}
+	<button type="submit" class="btn btn-secondary w-100">{{ trad('verifier', lang) }}</button>
+</form>
+
+{% if votesClos %}
+	<h3 class="h6 mt-4">{{ trad('verification_liste_titre', lang) }}</h3>
+	<p class="t-14">{{ trad('verification_liste_intro', lang) }}</p>
+	<ul class="t-14">
+		{% for v in votesClos %}
+			<li><a href="{{ path_for('electeur.verification.empreintes', {'vote_id': v.id}) }}" target="_blank" rel="noopener">{{ v.nom }}</a></li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+{% endblock %}

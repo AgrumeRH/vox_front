@@ -1,0 +1,95 @@
+{% extends 'templates/app.twig' %}
+{% set pagetitle = trad('codeclient', lang) %}
+{% set activemenu = 'codeclient' %}
+
+{% block content %}
+	<div class="row" id="codeclient">
+		<div class="col-md-12">
+			<h1>{{ trad('codeclient', lang) }}</h1>
+
+			<p class="small">
+				Le code exécuté dans votre navigateur est publié dans le dépôt
+				<a href="https://github.com/AgrumeRH/vox_front" target="_blank" rel="noopener">AgrumeRH/vox_front</a>.
+				Chaque fichier est chargé avec son empreinte
+				(attribut <code>integrity</code>) : le navigateur refuse d'exécuter un fichier qui ne correspond pas.
+			</p>
+
+			<table class="table table-sm small">
+				<tbody>
+					<tr><th scope="row">Livraison</th><td>{{ manifeste.application }} {{ constant('LIVRAISON') }}</td></tr>
+					<tr>
+						<th scope="row">Empreinte du manifeste (SHA-256)</th>
+						<td><code id="empreinte-manifeste">{{ empreinteManifeste }}</code></td>
+					</tr>
+					<tr>
+						<th scope="row">Manifeste</th>
+						<td><a href="{{ base_url() }}/{{ fichierManifeste }}">{{ fichierManifeste }}</a> ({{ manifeste.fichiers|length }} fichiers)</td>
+					</tr>
+					<tr>
+						<th scope="row">Contrôle sur ce serveur</th>
+						<td id="controle-code-client">
+							{% if controle.modifies is empty and controle.absents is empty and controle.non_declares is empty %}
+								<span class="text-success"><i class="fa fa-check"></i> {{ controle.conformes|length }} fichiers conformes au manifeste</span>
+							{% else %}
+								<span class="text-danger"><i class="fa fa-exclamation-triangle"></i> Écart avec le manifeste</span>
+								<ul class="mb-0">
+									{% for f in controle.modifies %}<li>Modifié : <code>{{ f }}</code></li>{% endfor %}
+									{% for f in controle.absents %}<li>Absent : <code>{{ f }}</code></li>{% endfor %}
+									{% for f in controle.non_declares %}<li>Non déclaré : <code>{{ f }}</code></li>{% endfor %}
+								</ul>
+							{% endif %}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2 class="h5">Vérifier</h2>
+			<p class="small">
+				Ce contrôle est fait par le serveur lui-même : il ne remplace pas une vérification indépendante.
+				Le bureau de vote ou un expert compare l'empreinte du manifeste ci-dessus à celle publiée dans
+				<code>AgrumeRH/vox_front</code> (fichier <code>EMPREINTES.sha256</code>), puis contrôle les fichiers
+				réellement servis avec l'outil fourni dans ce dépôt :
+			</p>
+			<pre class="small bg-light p-2"><code>python3 outils/verifier.py --site {{ base_url() }} --manifeste web/{{ fichierManifeste }}</code></pre>
+
+			<h2 class="h5">Fichiers</h2>
+			<p class="small">
+				<em>interne</em> : code écrit par Agrume, servi non minifié ;
+				<em>npm</em> : fichier identique au paquet officiel indiqué ;
+				<em>tierce</em> : bibliothèque dont la version d'origine n'a pas été retrouvée.
+			</p>
+			<div class="table-responsive">
+				<table class="table table-sm table-striped small" id="fichiers-code-client">
+					<thead>
+						<tr><th scope="col">Fichier</th><th scope="col">Provenance</th><th scope="col">SHA-256</th></tr>
+					</thead>
+					<tbody>
+						{% for chemin, f in manifeste.fichiers %}
+							<tr>
+								<td><code>{{ chemin }}</code></td>
+								<td>{{ f.provenance }}</td>
+								<td><code style="word-break:break-all;">{{ f.sha256 }}</code></td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block navigation %}
+    {% if area == '' %}
+	    {% include 'templates/visitornav.twig' %}
+    {% elseif area == 'electeur' %}
+	    {% include '/electeur/navigation.twig' %}
+    {% elseif area == 'observer' %}
+	    {% include '/observer/navigation.twig' %}
+    {% elseif area == 'manager' %}
+	    {% include '/manager/navigation.twig' %}
+    {% elseif area == 'admin' %}
+	   {% include '/admin/navigation.twig' %}
+    {% elseif area == 'expert' %}
+	   {% include '/expert/navigation.twig' %}
+    {% endif %}
+{% endblock %}

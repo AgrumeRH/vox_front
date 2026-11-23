@@ -1,0 +1,110 @@
+{% macro select(label, value, name, defaut) %}
+    {% if defaut is null %}
+        {% set defaut = trad('dept_naissance', lang) %}
+    {% endif %}
+	<div class="form-group">
+	{% if label %}<label for="{{ name | alphanum }}">{{ label }}</label>{% endif %}
+		<select class="form-control coe" id="{{ name | alphanum }}" name="{{ name }}">
+			<option value="">{{ defaut }}</option>
+			<option {% if value == "01" %}selected="selected"{% endif %} value="01">01 -  Ain </option>
+			<option {% if value == "02" %}selected="selected"{% endif %} value="02">02 -  Aisne </option>
+			<option {% if value == "03" %}selected="selected"{% endif %} value="03">03 -  Allier </option>
+			<option {% if value == "04" %}selected="selected"{% endif %} value="04">04 -  Alpes de Haute Provence </option>
+			<option {% if value == "05" %}selected="selected"{% endif %} value="05">05 -  Hautes Alpes </option>
+			<option {% if value == "06" %}selected="selected"{% endif %} value="06">06 -  Alpes Maritimes </option>
+			<option {% if value == "07" %}selected="selected"{% endif %} value="07">07 -  Ardèche </option>
+			<option {% if value == "08" %}selected="selected"{% endif %} value="08">08 -  Ardennes </option>
+			<option {% if value == "09" %}selected="selected"{% endif %} value="09">09 -  Ariège </option>
+			<option {% if value == "10" %}selected="selected"{% endif %} value="10">10 -  Aube </option>
+			<option {% if value == "11" %}selected="selected"{% endif %} value="11">11 -  Aude </option>
+			<option {% if value == "12" %}selected="selected"{% endif %} value="12">12 -  Aveyron </option>
+			<option {% if value == "13" %}selected="selected"{% endif %} value="13">13 -  Bouches du Rhône </option>
+			<option {% if value == "14" %}selected="selected"{% endif %} value="14">14 -  Calvados </option>
+			<option {% if value == "15" %}selected="selected"{% endif %} value="15">15 -  Cantal </option>
+			<option {% if value == "16" %}selected="selected"{% endif %} value="16">16 -  Charente </option>
+			<option {% if value == "17" %}selected="selected"{% endif %} value="17">17 -  Charente Maritime </option>
+			<option {% if value == "18" %}selected="selected"{% endif %} value="18">18 -  Cher </option>
+			<option {% if value == "19" %}selected="selected"{% endif %} value="19">19 -  Corrèze </option>
+			<option {% if value == "2A" %}selected="selected"{% endif %} value="2A">2A -  Corse du Sud </option>
+			<option {% if value == "2B" %}selected="selected"{% endif %} value="2B">2B -  Haute-Corse </option>
+			<option {% if value == "21" %}selected="selected"{% endif %} value="21">21 -  Côte d'Or </option>
+			<option {% if value == "22" %}selected="selected"{% endif %} value="22">22 -  Côtes d'Armor </option>
+			<option {% if value == "23" %}selected="selected"{% endif %} value="23">23 -  Creuse </option>
+			<option {% if value == "24" %}selected="selected"{% endif %} value="24">24 -  Dordogne </option>
+			<option {% if value == "25" %}selected="selected"{% endif %} value="25">25 -  Doubs </option>
+			<option {% if value == "26" %}selected="selected"{% endif %} value="26">26 -  Drôme </option>
+			<option {% if value == "27" %}selected="selected"{% endif %} value="27">27 -  Eure </option>
+			<option {% if value == "28" %}selected="selected"{% endif %} value="28">28 -  Eure et Loir </option>
+			<option {% if value == "29" %}selected="selected"{% endif %} value="29">29 -  Finistère </option>
+			<option {% if value == "30" %}selected="selected"{% endif %} value="30">30 -  Gard </option>
+			<option {% if value == "31" %}selected="selected"{% endif %} value="31">31 -  Haute Garonne </option>
+			<option {% if value == "32" %}selected="selected"{% endif %} value="32">32 -  Gers </option>
+			<option {% if value == "33" %}selected="selected"{% endif %} value="33">33 -  Gironde </option>
+			<option {% if value == "34" %}selected="selected"{% endif %} value="34">34 -  Hérault </option>
+			<option {% if value == "35" %}selected="selected"{% endif %} value="35">35 -  Ille et Vilaine </option>
+			<option {% if value == "36" %}selected="selected"{% endif %} value="36">36 -  Indre </option>
+			<option {% if value == "37" %}selected="selected"{% endif %} value="37">37 -  Indre et Loire </option>
+			<option {% if value == "38" %}selected="selected"{% endif %} value="38">38 -  Isère </option>
+			<option {% if value == "39" %}selected="selected"{% endif %} value="39">39 -  Jura </option>
+			<option {% if value == "40" %}selected="selected"{% endif %} value="40">40 -  Landes </option>
+			<option {% if value == "41" %}selected="selected"{% endif %} value="41">41 -  Loir et Cher </option>
+			<option {% if value == "42" %}selected="selected"{% endif %} value="42">42 -  Loire </option>
+			<option {% if value == "43" %}selected="selected"{% endif %} value="43">43 -  Haute Loire </option>
+			<option {% if value == "44" %}selected="selected"{% endif %} value="44">44 -  Loire Atlantique </option>
+			<option {% if value == "45" %}selected="selected"{% endif %} value="45">45 -  Loiret </option>
+			<option {% if value == "46" %}selected="selected"{% endif %} value="46">46 -  Lot </option>
+			<option {% if value == "47" %}selected="selected"{% endif %} value="47">47 -  Lot et Garonne </option>
+			<option {% if value == "48" %}selected="selected"{% endif %} value="48">48 -  Lozère </option>
+			<option {% if value == "49" %}selected="selected"{% endif %} value="49">49 -  Maine et Loire </option>
+			<option {% if value == "50" %}selected="selected"{% endif %} value="50">50 -  Manche </option>
+			<option {% if value == "51" %}selected="selected"{% endif %} value="51">51 -  Marne </option>
+			<option {% if value == "52" %}selected="selected"{% endif %} value="52">52 -  Haute Marne </option>
+			<option {% if value == "53" %}selected="selected"{% endif %} value="53">53 -  Mayenne </option>
+			<option {% if value == "54" %}selected="selected"{% endif %} value="54">54 -  Meurthe et Moselle </option>
+			<option {% if value == "55" %}selected="selected"{% endif %} value="55">55 -  Meuse </option>
+			<option {% if value == "56" %}selected="selected"{% endif %} value="56">56 -  Morbihan </option>
+			<option {% if value == "57" %}selected="selected"{% endif %} value="57">57 -  Moselle </option>
+			<option {% if value == "58" %}selected="selected"{% endif %} value="58">58 -  Nièvre </option>
+			<option {% if value == "59" %}selected="selected"{% endif %} value="59">59 -  Nord </option>
+			<option {% if value == "60" %}selected="selected"{% endif %} value="60">60 -  Oise </option>
+			<option {% if value == "61" %}selected="selected"{% endif %} value="61">61 -  Orne </option>
+			<option {% if value == "62" %}selected="selected"{% endif %} value="62">62 -  Pas de Calais </option>
+			<option {% if value == "63" %}selected="selected"{% endif %} value="63">63 -  Puy de Dôme </option>
+			<option {% if value == "64" %}selected="selected"{% endif %} value="64">64 -  Pyrénées Atlantiques </option>
+			<option {% if value == "65" %}selected="selected"{% endif %} value="65">65 -  Hautes Pyrénées </option>
+			<option {% if value == "66" %}selected="selected"{% endif %} value="66">66 -  Pyrénées Orientales </option>
+			<option {% if value == "67" %}selected="selected"{% endif %} value="67">67 -  Bas Rhin </option>
+			<option {% if value == "68" %}selected="selected"{% endif %} value="68">68 -  Haut Rhin </option>
+			<option {% if value == "69" %}selected="selected"{% endif %} value="69">69 -  Rhône </option>
+			<option {% if value == "70" %}selected="selected"{% endif %} value="70">70 -  Haute Saône </option>
+			<option {% if value == "71" %}selected="selected"{% endif %} value="71">71 -  Saône et Loire </option>
+			<option {% if value == "72" %}selected="selected"{% endif %} value="72">72 -  Sarthe </option>
+			<option {% if value == "73" %}selected="selected"{% endif %} value="73">73 -  Savoie </option>
+			<option {% if value == "74" %}selected="selected"{% endif %} value="74">74 -  Haute Savoie </option>
+			<option {% if value == "75" %}selected="selected"{% endif %} value="75">75 -  Paris </option>
+			<option {% if value == "76" %}selected="selected"{% endif %} value="76">76 -  Seine Maritime </option>
+			<option {% if value == "77" %}selected="selected"{% endif %} value="77">77 -  Seine et Marne </option>
+			<option {% if value == "78" %}selected="selected"{% endif %} value="78">78 -  Yvelines </option>
+			<option {% if value == "79" %}selected="selected"{% endif %} value="79">79 -  Deux Sèvres </option>
+			<option {% if value == "80" %}selected="selected"{% endif %} value="80">80 -  Somme </option>
+			<option {% if value == "81" %}selected="selected"{% endif %} value="81">81 -  Tarn </option>
+			<option {% if value == "82" %}selected="selected"{% endif %} value="82">82 -  Tarn et Garonne </option>
+			<option {% if value == "83" %}selected="selected"{% endif %} value="83">83 -  Var </option>
+			<option {% if value == "84" %}selected="selected"{% endif %} value="84">84 -  Vaucluse </option>
+			<option {% if value == "85" %}selected="selected"{% endif %} value="85">85 -  Vendée </option>
+			<option {% if value == "86" %}selected="selected"{% endif %} value="86">86 -  Vienne </option>
+			<option {% if value == "87" %}selected="selected"{% endif %} value="87">87 -  Haute Vienne </option>
+			<option {% if value == "88" %}selected="selected"{% endif %} value="88">88 -  Vosges </option>
+			<option {% if value == "89" %}selected="selected"{% endif %} value="89">89 -  Yonne </option>
+			<option {% if value == "90" %}selected="selected"{% endif %} value="90">90 -  Territoire de Belfort </option>
+			<option {% if value == "91" %}selected="selected"{% endif %} value="91">91 -  Essonne </option>
+			<option {% if value == "92" %}selected="selected"{% endif %} value="92">92 -  Hauts de Seine </option>
+			<option {% if value == "93" %}selected="selected"{% endif %} value="93">93 -  Seine Saint Denis </option>
+			<option {% if value == "94" %}selected="selected"{% endif %} value="94">94 -  Val de Marne </option>
+			<option {% if value == "95" %}selected="selected"{% endif %} value="95">95 -  Val d'Oise </option>
+			<option {% if value == "97" %}selected="selected"{% endif %} value="97">97 -  Départements d'outre-mer</option>
+			<option {% if value == "98" %}selected="selected"{% endif %} value="98">98 -  Territoires d'outre-mer</option>
+			<option {% if value == "99" %}selected="selected"{% endif %} value="99">99 -  Etranger</option>
+		</select>
+	</div>
+{% endmacro %}

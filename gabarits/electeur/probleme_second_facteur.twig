@@ -1,0 +1,41 @@
+{% extends 'templates/visitor.twig' %}
+{% import 'templates/form.twig' as form %}
+{% import 'templates/departements.twig' as dep %}
+{% set activemenu = 'electeur' %}
+
+{% block subcontent %}
+<form action="{{ path_for('electeur.probleme.second.send') }}" method="POST" autocomplete="off">
+
+	<p class="text-justify t-14 mb-2"><i class="fa fa-info-circle mr-1 text-info"></i>
+		{{ trad('probleme_second_intro', lang) }}
+	</p>
+	<p class="text-justify t-14 mb-3">
+		{{ trad('probleme_second_explication', lang) }}
+	</p>
+
+	{% if election.election_infotype == 'datedepnaiss' %}
+		{{ form.date(trad('date_naissance', lang),'','useraccess[useraccess_datenaiss]') }}
+		{{ dep.select(trad('dept_naissance', lang),'','useraccess[useraccess_depnaiss]') }}
+	{% else %}
+		{{ form.input(libelleDonnee,'',libelleDonnee,'useraccess[useraccess_numss]') }}
+	{% endif %}
+
+	<label class="t-14">{{ trad('probleme_second_coordonnees', lang) }}</label>
+	{{ form.email("",'',trad('email', lang),'useraccess[useraccess_email]') }}
+	{{ form.input("",'',trad('tel', lang),'useraccess[useraccess_tel]') }}
+
+	{{ form.textarea("",'',trad('message_personnel',lang),'message') }}
+
+	{{ form.csrf(csrf) }}
+	<button type="submit" class="btn btn-info btn-icon btn-pad w-100">
+		<i class="fa fa-paper-plane"></i>
+		{{ trad('envoyer_votre_demande',lang) }}
+	</button>
+</form>
+
+<div class="form-group small mt-3">
+	<a href="{{ path_for('electeur.login.confirm') }}" class="text-secondary" aria-label="retour second facteur">
+		<i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i>
+		{{ trad('retour', lang) }}</a>
+</div>
+{% endblock %}

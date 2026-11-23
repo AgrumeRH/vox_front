@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="language" content="fr-FR"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<base href="{{ base_url() }}"/>
+		<title>
+			{% if election.election_name %}
+				{{ election.election_name }}{% else %}Elections
+			{% endif %}
+		</title>
+		<link rel="icon" href="{{ base_url() }}/img/favicon.ico">
+        {{ feuille('fontawesome6/css/all.min.css') }}
+		{{ feuille('bootstrap/css/bootstrap.min.css') }}
+        {% if organisateur %}
+            {{ feuille('sweetalert2/sweetalert2.min.css') }}
+        {% else %}
+            {{ feuille('sweetalert/sweetalert.css') }}
+        {% endif %}
+		{% if jsdatetime %}
+			{{ feuille('datetimepicker/css/bootstrap-datetimepicker.css') }}
+		{% endif %}
+		{{ feuille('css/app.css') }}
+		{% if election.election_css == 1 %}
+			{{ feuille('css/custom.css') }}
+		{% endif %}
+        {% if organisateur %}
+            {{ feuille('css/organisateur.css') }}
+        {% endif %}
+		{% if countdown %}
+			{{ feuille('countdown/css/countdown.css') }}
+		{% endif %}
+		{% if datatable %}
+			{{ feuille('datatables/datatables.min.css') }}
+		{% endif %}
+		{# Js for ChartJs must be called before rendering chart script in twig #}
+		{{ script('chartjs/Chart.min.js') }}
+		{{ script('chartjs-plugin-datalabels/chartjs-plugin-datalabels.min.js') }}
+	</head>
+	<body class="{% if area %}{{ area }}{% elseif session.area %}{{ session.area }}{% else %}electeur{% endif %} {% if fullScreen %}fullarea{% else %}centerarea{% endif %} {% if iniframe %}iniframe{% endif %}"{% if fullScreen is null %} style="background-image:url('{{ base_url() }}{% if election.election_background %}/custom/{{ election.election_background }}{% else %}/img/background-default.webp{% endif %}');"{% endif %}>
+
+	{% block navigation %}{% endblock %}
+
+		<div class="mainarea container{% if fullScreen %}-fluid modale-frame{% endif %} {% if largeBo %}large-bo{% endif %}">
+			{% if messages.warningbig %}
+				<div class="alert alert-warning alert-big">
+					<span class="alert-icon">
+						<i class="fa fa-exclamation-circle"></i>
+					</span>
+					<div>
+						{% if messages.warningbig|length > 1 %}<ul>{% else %}<p>{% endif %}
+						{% for message in messages.warningbig %}
+							{% if messages.warningbig|length > 1 %}<li>{% endif %}
+							{{ message|nl2br }}
+							{% if messages.warningbig|length > 1 %}</li>{% endif %}
+						{% endfor %}
+						{% if messages.warningbig|length > 1 %}</ul>{% else %}</p>{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% if messages.error %}
+			<div class="alert alert-danger">
+					<span class="alert-icon">
+						<i class="fa fa-exclamation-triangle"></i>
+					</span>
+					<div>
+						{% if messages.error|length > 1 %}<ul>{% else %}<p>{% endif %}
+						{% for message in messages.error %}
+							{% if messages.error|length > 1 %}<li>{% endif %}
+							{{ message|nl2br }}
+							{% if messages.error|length > 1 %}</li>{% endif %}
+						{% endfor %}
+						{% if messages.error|length > 1 %}</ul>{% else %}</p>{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% if messages.info %}
+				<div class="alert alert-info">
+					<span class="alert-icon">
+						<i class="fa fa-info-circle"></i>
+					</span>
+					<div>
+						{% if messages.info|length > 1 %}<ul>{% else %}<p>{% endif %}
+						{% for message in messages.info %}
+							{% if messages.info|length > 1 %}<li>{% endif %}
+							{{ message|nl2br }}
+							{% if messages.info|length > 1 %}</li>{% endif %}
+						{% endfor %}
+						{% if messages.info|length > 1 %}</ul>{% else %}</p>{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% if messages.success %}
+				<div class="alert alert-success">
+					<span class="alert-icon">
+						<i class="fa fa-check"></i>
+					</span>
+					<div>
+						{% if messages.success|length > 1 %}<ul>{% else %}<p>{% endif %}
+						{% for message in messages.success %}
+							{% if messages.success|length > 1 %}<li>{% endif %}
+							{{ message|nl2br }}
+							{% if messages.success|length > 1 %}</li>{% endif %}
+						{% endfor %}
+						{% if messages.success|length > 1 %}</ul>{% else %}</p>{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% if messages.warning %}
+				<div class="alert alert-warning">
+					<span class="alert-icon">
+						<i class="fa fa-exclamation-circle"></i>
+					</span>
+					<div>
+						{% if messages.warning|length > 1 %}<ul>{% else %}<p>{% endif %}
+						{% for message in messages.warning %}
+							{% if messages.warning|length > 1 %}<li>{% endif %}
+							{{ message|nl2br }}
+							{% if messages.warning|length > 1 %}</li>{% endif %}
+						{% endfor %}
+						{% if messages.warning|length > 1 %}</ul>{% else %}</p>{% endif %}
+					</div>
+				</div>
+			{% endif %}
+			{% block content %}{% endblock %}
+		</div>
+
+		{% if constant('DEBUG') and fullScreen is null and not organisateur %}
+			<nav class="navbar navbar-dark debug text-white fixed-bottom small">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<i class="fa fa-bug mr-1"></i>
+						Mode DEBUG activé
+					</div>
+				</div>
+			</nav>
+		{% endif %}
+		{% if fullScreen is null and not organisateur %}
+
+			<nav class="navbar gris-7 fixed-bottom footervox small">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						Vox'agrume {{ constant('LIVRAISON') }} | {{ "now"|date("d/m/Y H:i") }} |
+						<a href="{{ path_for('plansite') }}" class="footerlink" aria-label="{{ trad('plansite', lang) }}">{{ trad('plansite', lang) }}</a> | 
+						<a href="{{ path_for('mentionslegales') }}" class="footerlink" aria-label="{{ trad('mentionslegales', lang) }}">{{ trad('mentionslegales', lang) }}</a> | 
+						<a href="{{ path_for('rgpd') }}" class="footerlink" aria-label="{{ trad('rgpd', lang) }}">{{ trad('rgpd', lang) }}</a> |
+						<a href="{{ base_url() }}/protocole.html" class="footerlink" aria-label="{{ trad('protocole_vote', lang) }}">{{ trad('protocole_vote', lang) }}</a> |
+						<a href="https://github.com/AgrumeRH/vox_front" target="_blank" class="footerlink" aria-label="{{ trad('gitcode', lang) }}">{{ trad('gitcode', lang) }}</a> |
+						<a href="{{ path_for('codeclient') }}" class="footerlink" aria-label="{{ trad('codeclient', lang) }}">{{ trad('codeclient', lang) }}</a> |
+						<a href="{{ path_for('hotline.login') }}" class="footerlink" aria-label="Accès Hotline">Hotline</a>
+					</div>
+				</div>
+			</nav>
+        {% elseif organisateur %}
+            <footer id="footer-organisateur">
+                <a href="{{ path_for('mentionslegales') }}" class="footerlink" aria-label="{{ trad('mentionslegales', lang) }}">{{ trad('mentionslegales', lang) }}</a> |
+                <a href="{{ path_for('codeclient') }}" class="footerlink" aria-label="{{ trad('codeclient', lang) }}">{{ trad('codeclient', lang) }}</a> |
+                Vox'agrume {{ constant('LIVRAISON') }} | {{ "now"|date("d/m/Y H:i")}}
+                </footer>
+		{% endif %}
+
+		{{ script('js/jquery/jquery-3.3.1.min.js') }}
+		{{ script('js/jquery-ui/jquery-ui.min.js') }}
+		{{ script('bootstrap/js/bootstrap.bundle.min.js') }}
+		{{ script('js/moment/moment.min.js') }}
+		{{ script('js/moment/fr.js') }}
+        {% if organisateur %}
+            {{ script('sweetalert2/sweetalert2.all.min.js') }}
+        {% else %}
+            {{ script('sweetalert/sweetalert.min.js') }}
+        {% endif %}
+
+		{% if jsdatetime %}
+			{{ script('datetimepicker/js/bootstrap-datetimepicker.min.js') }}
+		{% endif %}
+
+		{% if jsfileupload or organisateur %}
+			{{ script('js/fileupload/jquery.iframe-transport.js') }}
+			{{ script('js/fileupload/jquery.fileupload.js') }}
+		{% endif %}
+		{% if jsvote or jsrecu %}
+			{{ script('js/recu.js') }}
+		{% endif %}
+		{% if jsvote %}
+			{{ script('js/chiffrement-bulletin.js') }}
+			{{ script('js/vote.js') }}
+		{% endif %}
+		{% if countdown %}
+			{{ script('countdown/js/jquery.countdown.min.js') }}
+			{{ script('countdown/js/vote-countdown.js') }}
+		{% endif %}
+		{% if datatable %}
+			{{ script('datatables/datatables.min.js') }}
+		{% endif %}
+		{% if charactercounter %}
+			{{ script('js/charactercounter/jquery.charactercounter.js') }}
+		{% endif %}
+		
+
+		{{ script('js/condition-affichage.js') }}
+		{{ script('js/app.js') }}
+		{{ script('js/traduction.js') }}
+		{% if jscledep or organisateur or jsdepouillement %}
+			{# Clé de dépouillement générée (CNIL E2) et utilisée (CNIL E3) dans le navigateur #}
+			{{ script('js/cledep.js') }}
+		{% endif %}
+		{% if jscledep %}
+			{{ script('js/cledep-ui.js') }}
+		{% endif %}
+		{% if jsdepouillement %}
+			{{ script('js/depouillement.js') }}
+		{% endif %}
+		{% if organisateur %}
+            {# Empreintes des scripts d'étape, chargés par organisateur.js (CNIL E27) #}
+            <script type="application/json" id="integrite-etapes">{{ integrites('js/organisateur')|json_encode|raw }}</script>
+            {{ script('js/organisateur.js') }}
+        {% endif %}
+		{% if aidechat %}
+		{{ script('js/aide_chat.js') }}
+		{{ feuille('css/aide_chat.css') }}
+		{% endif %}
+		
+
+		{% if scripts %}
+			<script nonce="{{ csp_nonce }}">
+				$(function () {
+					{% for script in scripts.ready %}
+						{{ script|raw }}
+					{% endfor %}
+				});
+			</script>
+		{% endif %}
+
+		{% if fullScreen is null %}
+			<div class="ring">
+				<span></span>
+			</div>
+		{% endif %}
+
+	</body>
+</html>

@@ -1,0 +1,107 @@
+{% extends 'templates/app.twig' %}
+{% set pagetitle = 'Plan' %}
+{% set activemenu = 'plan' %}
+
+{% block content %}
+	<div class="row" id="plansite">
+		<div class="col-md-12">
+			<h1>{{ trad('plansite', lang) }}</h1>
+            <ul>
+                <li><a href="{{ path_for('electeur.login') }}" aria-label="{{ trad('espace_electeur', lang )}}">{{ trad('connexion', lang )}} {{ trad('espace_electeur', lang )}}</a></li>
+
+                <li><a href="{{ path_for('observer.login') }}" aria-label="{{ trad('espace_observateur', lang )}}">{{ trad('connexion', lang )}} {{ trad('espace_observateur', lang )}}</a></li>
+
+                <li><a href="{{ path_for('manager.login') }}" aria-label="{{ trad('espace_membre', lang )}}">{{ trad('connexion', lang )}} {{ trad('espace_membre', lang )}}</a></li>
+
+                {% if area == 'electeur' or area == '' %}
+                    <li><a href="{{ path_for('electeur.votes') }}" aria-label="{{ trad('espace_vote', lang )}}">
+                        {% if area == '' %}<i class="fa fa-lock gris-7 t-12"></i>{% endif %}
+                        {{ trad('espace_vote', lang )}}</a> 
+                    </li>
+                {% endif %}
+
+                {% if area == 'observer' %}
+                    <li><a href="{{ path_for('observer.dashboard') }}" aria-label="{{ trad('tableau_de_bord', lang )}}">
+                        {{ trad('tableau_de_bord', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('observer.partage') }}" aria-label="{{ trad('partage_docs', lang )}}">
+                        {{ trad('partage_docs', lang )}}</a> 
+                    </li>
+                {% endif %}
+
+                 {% if area == 'expert' %}
+                    <li><a href="{{ path_for('expert.dashboard') }}" aria-label="{{ trad('tableau_de_bord', lang )}}">
+                        {{ trad('tableau_de_bord', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('expert.partage') }}" aria-label="{{ trad('partage_docs', lang )}}">
+                        {{ trad('partage_docs', lang )}}</a> 
+                    </li>
+                {% endif %}
+
+                {% if area == 'manager' %}
+                    <li><a href="{{ path_for('manager.dashboard') }}" aria-label="{{ trad('tableau_de_bord', lang )}}">
+                        {{ trad('tableau_de_bord', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('manager.modifs') }}" aria-label="{{ trad('demandes_verifications', lang )}}">
+                        {{ trad('demandes_verifications', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('manager.partage') }}" aria-label="{{ trad('partage_docs', lang )}}">
+                        {{ trad('partage_docs', lang )}}</a> 
+                    </li>   
+                {% endif %}
+
+                {% if area == 'admin' %}
+                     <li><a href="{{ path_for('admin.dashboard') }}" aria-label="{{ trad('tableau_de_bord', lang )}}">
+                        {{ trad('tableau_de_bord', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.election') }}" aria-label="Configuration de l'élection">
+                        Configuration de l'élection</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.votes') }}" aria-label="Gestion des votes">
+                        Gestion des votes</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.electeurs') }}" aria-label="Electeurs">
+                        Electeurs</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.members') }}" aria-label="Utilisateurs">
+                        Utilisateurs</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.partage') }}" aria-label="{{ trad('partage_docs', lang )}}">
+                        {{ trad('partage_docs', lang )}}</a> 
+                    </li>
+                    <li><a href="{{ path_for('admin.contact') }}" aria-label="Messagerie">
+                        Messagerie</a> 
+                    </li>
+                {% endif %}
+
+                <li><a href="{{ path_for('rgpd') }}" aria-label="{{ trad('rgpd', lang )}}">{{ trad('rgpd', lang )}}</a></li>
+
+                <li><a href="{% if area == 'electeur' or area == '' %}
+                    {{ path_for('electeur.doc') }}
+                {% elseif  area == 'observer' %}
+                    {{ path_for('observer.doc') }}
+                {% elseif  area == 'manager' %}
+                    {{ path_for('manager.doc') }}
+                {% endif %}" target="_blank" aria-label="{{ trad('guide', lang )}}">{{ trad('guide', lang )}}</a></li> 
+
+            </ul>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block navigation %}
+    {% if area == '' %}
+	    {% include 'templates/visitornav.twig' %}
+    {% elseif area == 'electeur' %}
+	    {% include '/electeur/navigation.twig' %}
+    {% elseif area == 'observer' %}
+	    {% include '/observer/navigation.twig' %}
+    {% elseif area == 'manager' %}
+	    {% include '/manager/navigation.twig' %}
+    {% elseif area == 'admin' %}
+	   {% include '/admin/navigation.twig' %}
+    {% elseif area == 'expert' %}
+	   {% include '/expert/navigation.twig' %}
+    {% endif %}
+{% endblock %}

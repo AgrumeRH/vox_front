@@ -1,0 +1,33 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+	<div class="text-center election_logo">
+	<img style="max-width:100%;margin-bottom:1rem;" 
+	src="{{ base_url() }}{% if election.election_logo %}/custom/{{ election.election_logo }}{% else %}/img/logo-default.png{% endif %}"
+	alt=""	
+	>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<h1 class="election_title">{{ election.election_name }}</h1>
+			<div class="election_description">{{ election.election_description|texte_accueil|nl2br }}</div>
+			<div class="infos-rgpd">
+			<p class="mb-0 bb-1"><i class="fa fa-check text-success"></i> {{ trad('rgpd', lang) }}</p>
+				{{ trad('rgpd_info', lang) }}
+			</div>
+		</div>
+		<div class="col-sm-6 election_content">
+			<div class="card">
+				<div class="card-body bg-e5">
+					{% block subcontent %}{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}
+
+{% block navigation %}
+	{% include 'templates/visitornav.twig' %}
+{% endblock %}

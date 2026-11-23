@@ -1,0 +1,228 @@
+{% extends 'templates/app.twig' %}
+{% import 'templates/form.twig' as form %}
+{% set countdown = election.countdown %}
+{% set jsrecu = 1 %}
+
+{% block content %}
+{# Envoi refusé (recu.js) : le navigateur oublie ses tentatives en attente pour ces votes. #}
+{% if recus_refuses is defined and recus_refuses %}<div hidden data-recu-refus="{{ recus_refuses|join(',') }}"></div>{% endif %}
+
+
+	{% if not votes %}
+		<div class="alert alert-danger">{{ trad('acces_aucun_vote', lang, { numtel:election.election_phone })|nl2br }}</div>
+	{% else %}
+		<div class="row">
+			<div class="col-12">
+				<div class="alert alert-info">
+					<span class="alert-icon">
+						<i class="fa fa-info"></i>
+					</span>
+					<div>
+						<p class="t-14">
+						{% if votes|length > 1 %}
+							{{ trad('bonjour_vous_etes_inscrit_votes', lang, { prenom:session.useraccess_prenom, nom:session.useraccess_nom, nb:votes|length }) }}
+						{% else %}
+							{{ trad('bonjour_vous_etes_inscrit_vote', lang, { prenom:session.useraccess_prenom, nom:session.useraccess_nom }) }}
+						{% endif %}
+						</p>
+						<p class="t-14">
+							{% if votes|length > 1 %}
+								{{ trad('bulletins_enregistres_oubliez_pas', lang) }}
+							{% else %}
+								{{ trad('bulletin_enregistre_oubliez_pas', lang) }}
+							{% endif %}
+							<a href="{{ path_for('logout') }}" class="text-danger">{{ trad('deconnecter', lang) }}</a>.
+						</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="row justify-content-md-center">
+			{% for vote in votes %}
+				<div class="col-md-6">
+					<div class="card vote-card">
+						<div class="card-header pt-1">
+							{% if type == 'referendum' or type == 'porteurs' or type == 'votemultiple' %}
+								<h2 class="card-title text-center">{{ trad('vote_electronique', lang) }}</h2>
+								<h3 class="card-subtitle">{{  vote.vote_college }}</h3>
+							{% elseif  type == 'barreau' %}
+								<h2 class="card-title text-center">
+									{{ vote.vote_college }}
+								</h2>
+								<h3 class="card-subtitle subtitle-tour pt-1">
+									<strong>( </strong>{% if vote.vote_tour == 1 %}{{ trad('premier_tour', lang) }}{% else %}{{ trad('second_tour', lang) }}{% endif %}<strong> )</strong>
+								</h3>
+							{% else %}
+								<h2 class="card-title text-center">{{ trad('college', lang) }}
+									{{ vote.vote_college }}, {{ trad('election_des', lang) }} {{ trad(vote.vote_category|lower, lang) }}
+								</h2>
+								<h3 class="card-subtitle subtitle-tour pt-1">
+									<strong>( </strong>{% if vote.vote_tour == 1 %}{{ trad('premier_tour', lang) }}{% else %}{{ trad('second_tour', lang) }}{% endif %}<strong> )</strong>
+								</h3>
+							{% endif %}
+							<div class="row mt-3">
+								{% set colmdgauche = vote.vote_start < currentdate and vote.vote_end > currentdate and vote.vote_status == 'published' ? 6 : '12 text-center' %}
+								{% set colmddroite = vote.vote_start < currentdate and vote.vote_end > currentdate and vote.vote_status == 'published' ? 12 : '12 d-none' %}
+
+								{% if vote.uservote_status == 'avote' %}
+
+									<div class="col-md-6 mt-3">
+									
+											<h4 class="text-center text-success text-white p-2">
+												<i class="fa fa-vote-yea mb-1"></i><p class="mb-0 t-14">{{ trad('deja_vote', lang) }}</p>
+											</h4>
+									</div>
+									<div class="col-md-6 mt-3">
+										<a class="btn btn-secondary btn-icon w-100 btn-pad noloader" href="{{ path_for('electeur.vote.certif',{"vote_id" : vote.vote_id}) }}">
+										<i class="fa fa-download"></i>{{ trad('telechargez_accuse_reception', lang) }}</a>
+									</div>
+									<div class="col-md-12 mt-3">
+										<p class="text-08rem pl-1 text-secondary mb-0">{{ trad('verifiez_bulletin', lang) }} :</p>
+										<form method="POST" action="{{ path_for('electeur.vote.check') }}" class="alert mt-1">
+											
+											<div class="input-group">
+												<input autocomplete="off" type="text" class="form-control t-14" value="" name="cleenregistrement" placeholder="{{ trad('cle_enregistrement', lang) }}">
+												<div class="input-group-append">
+													<button type="submit" class="btn btn-secondary">{{ trad('verifier', lang) }}</button>
+												</div>
+												<input type="hidden" name="vote_id" value="{{ vote.vote_id }}"/>					
+												{{ form.csrf(csrf) }}		
+											</div>					
+										</form>
+									</div>
+									<div class="col-md-12 mt-2 d-none" data-recu-vote="{{ vote.vote_id }}" data-recu-libelle="{{ trad('recu_libelle_fichier', lang) }}" data-recu-depot="{{ recus[vote.vote_id] is defined ? recus[vote.vote_id]|join(',') : '' }}">
+										<p class="text-08rem pl-1 text-secondary mb-1">{{ trad('recu_empreinte_bulletin', lang) }} :</p>
+										<code class="d-block text-break p-2 bg-light" data-recu-valeur></code>
+										<p class="alert alert-danger text-08rem mt-1 mb-1 d-none" data-recu-different>{{ trad('recu_different', lang) }}</p>
+										<p class="alert alert-warning text-08rem mt-1 mb-1 d-none" data-recu-non-confirme>{{ trad('recu_non_confirme', lang) }}</p>
+										<p class="text-08rem pl-1 text-secondary mb-1 d-none" data-recu-plusieurs-envois>{{ trad('recu_plusieurs_envois', lang) }}</p>
+										<p class="text-08rem pl-1 text-secondary mb-1 d-none" data-recu-plusieurs>{{ trad('recu_plusieurs_voix', lang) }}</p>
+										<a href="#" class="btn btn-sm btn-outline-secondary mt-1 noloader" data-recu-telecharger><i class="fa fa-download"></i> {{ trad('recu_telecharger', lang) }}</a>
+									</div>
+									<div class="col-md-12 mt-1">
+										<a class="text-08rem pl-1" href="{{ path_for('electeur.verification') }}" target="_blank" rel="noopener">{{ trad('recu_verifier_urne', lang) }}</a>
+									</div>
+								{% elseif vote.vote_carence_candidat == 1 %}
+
+									<div class="col-md-12 text-center mt-1">
+										<div class="infovotebadge badge-warning">
+											<span>
+												<i class="fa fa-ban fa-fw"></i>
+											</span><mark>{{ trad('pas_de_candidat', lang) }}</mark>
+										</div>
+									</div>
+
+								{% else %}
+
+									<div class="col-md-12 text-center mt-1">
+
+										{% if vote.vote_status == 'pending' %}
+											<div class="infovotebadge badge-info">
+												<span>
+													<i class="fa fa-hourglass-half fa-fw"></i>
+												</span><mark>{{ trad('vote_suspendu', lang) }}</mark>
+											</div>
+										{% elseif vote.vote_start >= currentdate %}
+											<div class="infovotebadge badge-info">
+												<span>
+													<i class="fa fa-clock fa-fw"></i>
+												</span><mark>{{ trad('vote_demarrera_le',lang) }}
+												{{ vote.vote_start|date(constant('DATETIME_FORMAT')) }}</mark>
+											</div>		
+										{% elseif vote.vote_end > currentdate and vote.vote_status == 'published'  %}
+											<div class="infovotebadge badge-success">
+												<span>
+													<i class="fa fa-door-open fa-fw"></i>
+												</span><mark>{{ trad('vote_ouvert',lang) }}</mark>
+											</div>	
+										{% elseif vote.vote_end > currentdate and vote.vote_status == 'created'  %}
+											<div class="infovotebadge badge-info">
+												<span>
+													<i class="fa fa-hourglass-half fa-fw"></i>
+												</span><mark>{{ trad('vote_preparation',lang) }}</mark>
+											</div>
+										{% else %}
+											<div class="infovotebadge badge-danger">
+												<span>
+													<i class="fa fa-flag-checkered fa-fw"></i>
+												</span><mark>{{ trad('vote_termine',lang) }}</mark>
+											</div>
+										{% endif %}
+									</div>
+									<div class="col-md-{{ colmddroite }} text-center pt-2">
+
+										{% if countdown == 1 %}
+											{% if currentdate <= vote.vote_end and currentdate >= vote.vote_start and vote.vote_status == 'published' %}
+												<div class="countdown">
+													<p>{{ trad('fin_du_vote_dans',lang) }}
+													<span class="countdown-container small" data-countdown="{{ vote.vote_end }}"></span></p>
+												</div>
+											{% elseif currentdate <= vote.vote_start %}
+												<div class="countdown">
+													<p>{{ trad('vote_ouvre_dans',lang) }}
+													<span class="countdown-container" data-countdown="{{ vote.vote_start }}"></span></p>
+												</div>
+											{% endif %}
+										{% endif %}
+											<p class="small anti-countdown {% if countdown == 1 %}d-none{% endif %}">{{ trad('fin_du_vote',lang) }} : {{ vote.vote_end|date('d/m/Y H:i') }}</p>
+										
+										
+									</div>
+								{% endif %}
+								
+							</div>
+						</div>
+						<div class="card-body">
+							{% if vote.vote_message %}
+								<div class="alert alert-{{ vote.vote_message_type }}">
+									<span class="alert-icon">
+										<i class="fa fa-info"></i>
+									</span>
+									<div>
+										<p class="t-14">{{ vote.vote_message }}</p>
+									</div>
+								</div>
+							{% endif %}
+							{% if vote.vote_description %}
+								<p class="card-text t-14">{{ vote.vote_description|nl2br }}</p>
+							{% endif %}
+							{% if vote.referendum_document != "" %}
+								<a class="downloadpdf btn btn-secondary btn-vote-document noloader w-100" href="{{ path_for(session.area~'.vote.referendum_document_download',{type:'document',file:vote.referendum_document,vote_id:vote.vote_id}) }}" title="{{ trad('telecharger_document', lang) }}">
+										<i class="far fa-file-pdf fa-lg"></i><br>
+										{{ trad('telecharger_document', lang) }}
+									</a>
+							{% endif %}
+						</div>
+						<div class="card-footer text-center">
+							{% if vote.uservote_status == 'nonvote' and vote.vote_end > currentdate and vote.vote_start <= currentdate and vote.vote_status == 'published' and vote.vote_carence_candidat == 0 %} 
+								<a class="btn btn-success btn-icon w-100 btn-pad govote" href="{{ path_for('electeur.vote',{"vote_id" : vote.vote_id}) }}">
+									<i class="fa fa-play"></i>
+									{{ trad('accedez_vote', lang) }}</a>					
+							{% endif %}
+							<div class="row">
+								<div class="col-12">
+									{% if currentdate <= vote.vote_end and currentdate >= vote.vote_start and vote.vote_status == 'published' and vote.vote_carence_candidat == 0 %}
+									{% elseif currentdate <= vote.vote_start %}
+									{% elseif vote.vote_end <= currentdate and vote.uservote_status == 'avote' %}
+										<p class="mb-0 mt-2 small text-info">{{ trad('merci_participation', lang) }}</p>
+									{% elseif vote.vote_end <= currentdate %}
+										<p class="mb-0 mt-2 small text-info">{{ trad('vote_clos_sans_bulletin', lang) }}</p>
+									{% elseif vote.vote_status == 'created'  %}
+										<p class="mb-0 mt-2 small text-info">{{ trad('revenez_bientot', lang) }}</p>
+									{% elseif vote.vote_carence_candidat == 1 %}	
+										<p class="mb-0 mt-2 small text-info">{{ trad('aucune_action', lang) }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block navigation %}
+	{% include '/electeur/navigation.twig' %}
+{% endblock %}

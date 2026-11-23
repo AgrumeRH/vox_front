@@ -1,0 +1,15 @@
+{% extends 'templates/email.twig' %}
+
+{% block content %}
+Chers membres du bureau,<br/><br/>
+{{ userAccess.useraccess_prenom }} {{ userAccess.useraccess_nom }} demande à ce que ses informations soient rectifiées :
+ <br/><br/>
+    <ul>
+    {% for modif in modifications %}
+        <li>{{ modif }}</li>
+    {% endfor %}
+    </ul>
+    Veuillez vérifier la conformité de ces informations et valider ou refuser les modifications sur votre <a href="{{ election.election_url }}{{ path_for('manager.modifs') }}" aria-label="valider et modifier informations">interface de gestion</a>.
+    <br/><br/>
+    <br/>
+{% endblock %}

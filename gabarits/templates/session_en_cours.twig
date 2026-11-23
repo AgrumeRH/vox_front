@@ -1,0 +1,6 @@
+{# Connexion déjà ouverte dans ce navigateur : la nouvelle la remplacera (Helpers\Main::sessionEnCours). #}
+{% if sessionEnCours %}
+	<div class="alert alert-warning small" role="alert" id="sessionEnCours">
+		<i class="fa-solid fa-triangle-exclamation mr-1"></i>{{ trad('session_en_cours', lang, {'qui': sessionEnCours}) }}
+	</div>
+{% endif %}

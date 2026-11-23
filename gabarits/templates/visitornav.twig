@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<a class="nav-link{% if activemenu == 'electeur' %} active{% endif %}" href="{{ path_for('electeur.login') }}"><i class="fas fa-person-booth"></i> {{ trad('acces_electeur', lang) }}</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link{% if activemenu == 'manager' %} active{% endif %}" href="{{ path_for('manager.login') }}"><i class="fas fa-user-tie"></i> {{ trad('acces_membres', lang) }}</a>
+			</li>
+			{% if organisateurs %}
+            <li class="nav-item">
+                <a class="nav-link{% if activemenu == 'organisateur' %} active{% endif %}" href="{{ path_for('organisateur.login') }}"><i class="fa fa-user-cog"></i> {{ trad('acces_organisateur', lang) }}</a>
+            </li>
+			{% endif %}
+			{% if observateurs %}
+			<li class="nav-item">
+				<a class="nav-link{% if activemenu == 'observer' %} active{% endif %}" href="{{ path_for('observer.login') }}"><i class="fa fa-eye"></i> {{ trad('acces_observateurs', lang) }}</a>
+			</li>
+			{% endif %}
+		</ul>
+	</div>
+
+	<a href="#" class="btn btn-a btnTraduction" data-url="{{ path_for('traduction') }}"><i class="fas fa-language"></i> <span class="d-none d-sm-inline text-09em">{{ trad('langue_btn_trad', lang) }}</span></a>
+
+	{% if activemenu == 'electeur' %}<a class="btn-a" href="{{ path_for('electeur.doc') }}" target="_blank"><i class="fa fa-book-open"></i> <span class="d-none d-sm-inline">{{ trad('guide', lang) }}</span></a>{% endif %}
+
+	{% if activemenu == 'manager' %}<a class="btn-a" href="{{ path_for('manager.doc') }}" target="_blank"><i class="fa fa-book-open"></i> <span class="d-none d-sm-inline">{{ trad('guide', lang) }}</span></a>{% endif %}
+
+	{% if activemenu == 'organisateur' %}<a class="btn-a" href="{{ path_for('organisateur.doc') }}" target="_blank"><i class="fa fa-book-open"></i> <span class="d-none d-sm-inline">{{ trad('guide', lang) }}</span></a>{% endif %}
+</nav>
